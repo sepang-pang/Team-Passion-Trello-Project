@@ -37,7 +37,6 @@ public class ColumnsServiceImpl implements ColumnsService {
         columnsRepository.delete(columns);
     }
 
-
     @Override
     @Transactional
     public ColumnsResponseDto updateColumns(Columns columns, ColumnsRequestDto requestDto, User user) {
@@ -48,8 +47,6 @@ public class ColumnsServiceImpl implements ColumnsService {
 
         return new ColumnsResponseDto(columns);
     }
-
-
 
     @Override
     public Columns findColumns(long id) {
