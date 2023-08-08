@@ -32,8 +32,7 @@ public class BoardController {
 
     @DeleteMapping("/board/{id}")
     public ResponseEntity<ApiResponseDto> deleteBoard(@PathVariable Long id, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        boardService.deleteBoard(id, userDetails.getUser());
-        return ResponseEntity.ok().body(new ApiResponseDto("보드 삭제 완료!", HttpStatus.OK.value()));
+        return boardService.deleteBoard(id, userDetails.getUser());
     }
 
 
