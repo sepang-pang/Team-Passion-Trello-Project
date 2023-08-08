@@ -3,9 +3,13 @@ package com.passion.teampassiontrelloproject.board.entity;
 import com.passion.teampassiontrelloproject.board.dto.BoardRequestDto;
 import com.passion.teampassiontrelloproject.common.entity.Timestamped;
 import com.passion.teampassiontrelloproject.user.entity.User;
+import com.passion.teampassiontrelloproject.userBoard.entity.UserBoard;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -32,6 +36,9 @@ public class Board extends Timestamped {
     @ManyToOne
     @JoinColumn(name="user_id")
     private User user;
+
+    @OneToMany(mappedBy = "board")
+    private List<UserBoard> UserBoards = new ArrayList<>();
 
     public Board(BoardRequestDto requestDto, User user) {
         this.name = user.getUsername();
