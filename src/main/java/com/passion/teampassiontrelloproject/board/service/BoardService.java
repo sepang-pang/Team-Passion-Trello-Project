@@ -29,12 +29,19 @@ public class BoardService {
         Board board = boardRepository.findById(id).orElseThrow(
                 () -> new IllegalArgumentException("존재하지 않는 보드입니다."));
 
+        board.update(boardRequestDto);
+        return new BoardResponseDto(board);
+
+    }
+
+    public void deleteBoard(Long id, User user) {
+        Board board = boardRepository.findById(id).orElseThrow(
+                () -> new IllegalArgumentException("존재하지 않는 보드입니다."));
+
         if(!user.getId().equals(board.getUser().getId())){
             throw new IllegalArgumentException("작성자만 수정할 수 있습니다.");
         }
 
-        board.update(boardRequestDto);
-        return new BoardResponseDto(board);
-
+        boardRepository.delete(board);
     }
 }
