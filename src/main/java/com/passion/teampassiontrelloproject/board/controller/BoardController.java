@@ -6,10 +6,8 @@ import com.passion.teampassiontrelloproject.board.service.BoardService;
 import com.passion.teampassiontrelloproject.common.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api")
@@ -21,6 +19,12 @@ public class BoardController {
     @PostMapping("/board")
     public BoardResponseDto createBoard(@RequestBody BoardRequestDto boardRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails){
         return boardService.createBoard(boardRequestDto, userDetails.getUser());
+    }
+
+    @Transactional
+    @PutMapping("/board/{id}")
+    public BoardResponseDto updateBoard(@PathVariable Long id, @RequestBody BoardRequestDto boardRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails){
+        return boardService.updateBoard(id,boardRequestDto, userDetails.getUser());
     }
 
 

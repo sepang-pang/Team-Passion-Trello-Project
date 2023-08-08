@@ -18,7 +18,23 @@ public class BoardService {
     @Transactional
     public BoardResponseDto createBoard(BoardRequestDto boardRequestDto, User user) {
         Board board = new Board(boardRequestDto,user);
+        board.setUser(user);
+
         boardRepository.save(board);
         return new BoardResponseDto(board);
+    }
+
+    @Transactional
+    public BoardResponseDto updateBoard(Long id,BoardRequestDto boardRequestDto, User user) {
+        Board board = boardRepository.findById(id).orElseThrow(
+                () -> new IllegalArgumentException("존재하지 않는 보드입니다."));
+
+        if(!user.getId().equals(board.getUser().getId())){
+            throw new IllegalArgumentException("작성자만 수정할 수 있습니다.");
+        }
+
+        board.update(boardRequestDto);
+        return new BoardResponseDto(board);
+
     }
 }
