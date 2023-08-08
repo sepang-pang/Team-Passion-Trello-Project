@@ -5,8 +5,8 @@ import com.passion.teampassiontrelloproject.board.dto.BoardResponseDto;
 import com.passion.teampassiontrelloproject.board.service.BoardService;
 import com.passion.teampassiontrelloproject.common.dto.ApiResponseDto;
 import com.passion.teampassiontrelloproject.common.security.UserDetailsImpl;
+import com.passion.teampassiontrelloproject.userBoard.dto.UserBoardRequestDto;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,6 +33,11 @@ public class BoardController {
     @DeleteMapping("/board/{id}")
     public ResponseEntity<ApiResponseDto> deleteBoard(@PathVariable Long id, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return boardService.deleteBoard(id, userDetails.getUser());
+    }
+
+    @PostMapping("/board/invite")
+    public ResponseEntity<ApiResponseDto> inviteBoard(@RequestBody UserBoardRequestDto userBoardRequestDto){
+        return boardService.inviteBoard(userBoardRequestDto);
     }
 
 
