@@ -22,7 +22,7 @@ public class ColumnController {
     private final ColumnsServiceImpl columnsService;
 
     @PostMapping("/columns")
-    public ResponseEntity<ColumnsResponseDto> createColumns(@AuthenticationPrincipal UserDetailsImpl userDetails, @RequestBody ColumnsResponseDto requestDto) {
+    public ResponseEntity<ColumnsResponseDto> createColumns(@AuthenticationPrincipal UserDetailsImpl userDetails, @RequestBody ColumnsRequestDto requestDto) {
         ColumnsResponseDto result= columnsService.createColumns(requestDto, userDetails.getUser());
 
         return ResponseEntity.status(HttpStatus.CREATED).body(result);

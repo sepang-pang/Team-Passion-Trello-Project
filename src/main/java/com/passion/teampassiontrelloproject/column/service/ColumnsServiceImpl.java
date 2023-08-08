@@ -20,6 +20,11 @@ public class ColumnsServiceImpl implements ColumnsService {
 
 
     @Override
+    public ColumnsResponseDto updateColumns(Columns columns, ColumnsRequestDto requestDto) {
+        return null;
+    }
+
+    @Override
     public ColumnsResponseDto createColumns(ColumnsRequestDto requestDto, User user) {
         Board board = boardService.findBoard(requestDto.getBoardId());
         Columns columns = new Columns(requestDto.getTitle());
@@ -36,6 +41,7 @@ public class ColumnsServiceImpl implements ColumnsService {
         columnsRepository.delete(columns);
     }
 
+
     @Override
     @Transactional
     public ColumnsResponseDto updateColumns(Columns columns, ColumnsRequestDto requestDto, User user) {
@@ -45,9 +51,11 @@ public class ColumnsServiceImpl implements ColumnsService {
         return new ColumnsResponseDto(columns);
     }
 
+
+
     @Override
-    public Board findBoard(long id) {
-        return BoardRepository.findById(id).orElseThrow(() ->
+    public Columns findColumns(long id) {
+        return columnsRepository.findById(id).orElseThrow(() ->
                 new IllegalArgumentException("선택한 게시글은 존재하지 않습니다.")
         );
     }
