@@ -2,7 +2,7 @@ package com.passion.teampassiontrelloproject.card.controller;
 
 import com.passion.teampassiontrelloproject.card.dto.CardRequestDto;
 import com.passion.teampassiontrelloproject.card.dto.CardResponseDto;
-import com.passion.teampassiontrelloproject.card.service.CardService;
+import com.passion.teampassiontrelloproject.card.service.CardServiceImpl;
 import com.passion.teampassiontrelloproject.common.dto.ApiResponseDto;
 import com.passion.teampassiontrelloproject.common.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @RequestMapping("/api/card")
 public class CardController {
-    private final CardService cardService;
+    private final CardServiceImpl cardService;
 
     // 카드 선택조회
     @GetMapping("/{id}")
@@ -31,7 +31,7 @@ public class CardController {
     // 카드 작성
     @PostMapping
     public ResponseEntity<CardResponseDto> createCard(@RequestBody CardRequestDto cardRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        CardResponseDto createCard = cardService.createPost(cardRequestDto, userDetails.getUser());
+        CardResponseDto createCard = cardService.createdCard(cardRequestDto, userDetails.getUser());
         return new ResponseEntity<>(createCard, HttpStatus.CREATED);
     }
 
