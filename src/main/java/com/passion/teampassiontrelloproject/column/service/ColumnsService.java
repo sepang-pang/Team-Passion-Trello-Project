@@ -12,8 +12,6 @@ public interface ColumnsService {
 
     ColumnsResponseDto createColumns(ColumnsRequestDto requestDto, User user);
 
-    ColumnsResponseDto updateColumns(Columns columns, ColumnsRequestDto requestDto);
-
     void deleteColumns(Columns columns, User user);
 
     Columns findColumns(long id);

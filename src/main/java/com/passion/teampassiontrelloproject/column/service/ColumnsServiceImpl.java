@@ -18,18 +18,14 @@ public class ColumnsServiceImpl implements ColumnsService {
     private final BoardService boardService;
     private final ColumnsRepository columnsRepository;
 
-
-    @Override
-    public ColumnsResponseDto updateColumns(Columns columns, ColumnsRequestDto requestDto) {
-        return null;
-    }
-
     @Override
     public ColumnsResponseDto createColumns(ColumnsRequestDto requestDto, User user) {
         Board board = boardService.findBoard(requestDto.getBoardId());
         Columns columns = new Columns(requestDto.getTitle());
         columns.setUser(user);
         columns.setBoard(board);
+        columns.setDescription(requestDto.getDescription());
+        columns.setName(requestDto.getName());
 
         var savedColumns = columnsRepository.save(columns);
 
@@ -47,6 +43,8 @@ public class ColumnsServiceImpl implements ColumnsService {
     public ColumnsResponseDto updateColumns(Columns columns, ColumnsRequestDto requestDto, User user) {
 
         columns.setTitle(requestDto.getTitle());
+        columns.setName(requestDto.getName());
+        columns.setDescription(requestDto.getDescription());
 
         return new ColumnsResponseDto(columns);
     }
@@ -56,7 +54,7 @@ public class ColumnsServiceImpl implements ColumnsService {
     @Override
     public Columns findColumns(long id) {
         return columnsRepository.findById(id).orElseThrow(() ->
-                new IllegalArgumentException("선택한 게시글은 존재하지 않습니다.")
+                new IllegalArgumentException("선택한 board는 존재하지 않습니다.")
         );
     }
 }
