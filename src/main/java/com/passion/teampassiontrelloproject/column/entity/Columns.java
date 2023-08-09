@@ -1,6 +1,7 @@
 package com.passion.teampassiontrelloproject.column.entity;
 
 import com.passion.teampassiontrelloproject.board.entity.Board;
+import com.passion.teampassiontrelloproject.common.entity.Timestamped;
 import com.passion.teampassiontrelloproject.user.entity.User;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -10,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @Table(name = "columns")
-public class Columns extends TimeStamped {
+public class Columns extends Timestamped {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
