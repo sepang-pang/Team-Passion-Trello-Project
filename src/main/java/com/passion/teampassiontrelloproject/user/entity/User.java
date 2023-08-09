@@ -1,6 +1,7 @@
 package com.passion.teampassiontrelloproject.user.entity;
 
 import com.passion.teampassiontrelloproject.common.entity.Timestamped;
+import com.passion.teampassiontrelloproject.userBoard.entity.UserBoard;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -33,7 +34,6 @@ public class User extends Timestamped {
     private UserRoleEnum role;
 
     private boolean isBlocked = false;
-
 
     public User(String username, String password, String email, UserRoleEnum role) {
         this.username = username;
