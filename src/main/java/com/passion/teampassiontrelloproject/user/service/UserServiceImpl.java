@@ -6,6 +6,7 @@ import com.passion.teampassiontrelloproject.common.jwt.JwtUtil;
 import com.passion.teampassiontrelloproject.user.change.password.PasswordManager;
 import com.passion.teampassiontrelloproject.user.change.password.repository.PasswordManagerRepository;
 import com.passion.teampassiontrelloproject.user.dto.ChangePasswordDto;
+import com.passion.teampassiontrelloproject.user.dto.CheckPasswordDto;
 import com.passion.teampassiontrelloproject.user.dto.SignupRequestDto;
 import com.passion.teampassiontrelloproject.user.entity.User;
 import com.passion.teampassiontrelloproject.user.entity.UserRoleEnum;
@@ -34,6 +35,8 @@ public class UserServiceImpl implements UserService{
 
     // ADMIN_TOKEN
     private final String ADMIN_TOKEN = "AAABnvxRVklrnYxKZ0aHgTBcXukeZygoC";
+
+    // 회원가입
     @Override
     public ResponseEntity<ApiResponseDto> signup(SignupRequestDto requestDto) {
         String username = requestDto.getUsername();
@@ -77,6 +80,28 @@ public class UserServiceImpl implements UserService{
 
         return ResponseEntity.ok().body(new ApiResponseDto("회원가입 성공", 200));
     }
+
+    @Override
+    // 회원탈퇴
+    public ResponseEntity<ApiResponseDto> withdrawal(CheckPasswordDto checkPasswordDto, User user) {
+
+        // 비밀번호 확인, 첫 번째 입력
+        if (!passwordEncoder.matches(checkPasswordDto.getFirstPassword(), user.getPassword())) {
+            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
+        }
+
+        // 비밀번호 확인, 두 번째 입력
+        if (!passwordEncoder.matches(checkPasswordDto.getSecondPassword(), user.getPassword())) {
+            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
+        }
+
+        // 회원삭제
+        userRepository.delete(user);
+
+        return ResponseEntity.ok().body(new ApiResponseDto("회원탈퇴 성공", 200));
+    }
+
+    // 로그아웃
     @Override
     public ResponseEntity<ApiResponseDto> logOut(HttpServletRequest request) {
         String token = jwtUtil.getJwtFromHeader(request);

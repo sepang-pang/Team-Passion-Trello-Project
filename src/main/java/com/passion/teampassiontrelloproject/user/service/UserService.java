@@ -7,6 +7,7 @@ import com.passion.teampassiontrelloproject.common.jwt.JwtUtil;
 import com.passion.teampassiontrelloproject.user.change.password.PasswordManager;
 import com.passion.teampassiontrelloproject.user.change.password.repository.PasswordManagerRepository;
 import com.passion.teampassiontrelloproject.user.dto.ChangePasswordDto;
+import com.passion.teampassiontrelloproject.user.dto.CheckPasswordDto;
 import com.passion.teampassiontrelloproject.user.dto.SignupRequestDto;
 import com.passion.teampassiontrelloproject.user.entity.User;
 import com.passion.teampassiontrelloproject.user.entity.UserRoleEnum;
@@ -29,9 +30,13 @@ public interface UserService {
     // 회원가입
     public ResponseEntity<ApiResponseDto> signup(SignupRequestDto requestDto);
 
+    // 회원탈퇴
+    public ResponseEntity<ApiResponseDto> withdrawal(CheckPasswordDto checkPasswordDto, User user);
+
     // 로그아웃
     public ResponseEntity<ApiResponseDto> logOut(HttpServletRequest request);
 
     // 비밀번호 변경
     public ResponseEntity<ApiResponseDto> changePassword(ChangePasswordDto changePasswordDto, User user);
+
 }

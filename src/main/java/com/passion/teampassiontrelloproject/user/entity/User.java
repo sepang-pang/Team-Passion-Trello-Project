@@ -1,6 +1,11 @@
 package com.passion.teampassiontrelloproject.user.entity;
 
+import com.passion.teampassiontrelloproject.board.entity.Board;
+import com.passion.teampassiontrelloproject.card.entity.Card;
+import com.passion.teampassiontrelloproject.column.entity.Columns;
+import com.passion.teampassiontrelloproject.common.blacklist.entity.UserBlackList;
 import com.passion.teampassiontrelloproject.common.entity.Timestamped;
+import com.passion.teampassiontrelloproject.user.change.password.PasswordManager;
 import com.passion.teampassiontrelloproject.userBoard.entity.UserBoard;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -34,6 +39,24 @@ public class User extends Timestamped {
     private UserRoleEnum role;
 
     private boolean isBlocked = false;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
+    private List<Board> boards;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
+    private List<Columns> columns;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
+    private List<Card> cards;
+
+    @OneToOne(mappedBy = "user", cascade = CascadeType.REMOVE)
+    private UserBlackList uerBlackList;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
+    private List<UserBoard> userBoards;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
+    private List<PasswordManager> passwordManagers;
 
     public User(String username, String password, String email, UserRoleEnum role) {
         this.username = username;
