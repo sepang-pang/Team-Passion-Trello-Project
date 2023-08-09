@@ -10,6 +10,9 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor
+@Table(uniqueConstraints = {
+        @UniqueConstraint(name = "UniqueUserBoard", columnNames = {"user_id", "board_id"})
+}) // 동일한 유저가 동일한 보드에 두 번 이상 등록되지 않도록 설정
 public class UserBoard {
 
     @Id
