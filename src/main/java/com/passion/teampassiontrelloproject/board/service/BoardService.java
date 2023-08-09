@@ -45,7 +45,7 @@ public class BoardService {
         Board board = findBoard(id);
 
         // 초대된 유저인지 체크
-        checkIfInvitedUser(board, user);
+        checkInvitedUser(board, user);
 
         // 수정
         board.update(boardRequestDto);
@@ -58,7 +58,7 @@ public class BoardService {
         Board board = findBoard(id);
 
         // 초대된 유저인지 체크
-        checkIfInvitedUser(board, user);
+        checkInvitedUser(board, user);
 
         // db 저장
         boardRepository.delete(board);
@@ -67,9 +67,9 @@ public class BoardService {
 
 
     @Transactional
-    public ResponseEntity<ApiResponseDto> inviteBoard(UserBoardRequestDto userBoardRequestDto) {
+    public ResponseEntity<ApiResponseDto> inviteBoard(UserBoardRequestDto userBoardRequestDto, User user) {
         // 초대 유저 조회
-        User targeUser = findUser(userBoardRequestDto.getUsername());
+        User targeUser = findUser(user, userBoardRequestDto.getUsername());
 
         // 초대할 보드 조회
         Board tagetBoard = findBoard(userBoardRequestDto.getBoardId());
@@ -92,12 +92,17 @@ public class BoardService {
     }
 
     // 유저 조회
-    public User findUser(String username) {
+    public User findUser(User user, String username) {
+        if (user.getUsername().equals(username)) {
+            throw new IllegalArgumentException("본인은 초대할 수 없습니다");
+        }
+
         return userRepository.findByUsername(username).orElseThrow(() -> new IllegalArgumentException("초대받지 못한 보드입니다."));
     }
 
     // 초대 유저 검증
-    private void checkIfInvitedUser(Board board, User user) {
+    private void checkInvitedUser(Board board, User user) {
+
         // 조회한 보드에서 유저보드 리스트 가져오기
         List<UserBoard> userBoards = board.getUserBoards();
 

@@ -35,7 +35,7 @@ public class BoardController {
     }
 
     @PostMapping("/board/invite") // 보드 초대
-    public ResponseEntity<ApiResponseDto> inviteBoard(@RequestBody UserBoardRequestDto userBoardRequestDto){
-        return boardService.inviteBoard(userBoardRequestDto);
+    public ResponseEntity<ApiResponseDto> inviteBoard(@RequestBody UserBoardRequestDto userBoardRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails){
+        return boardService.inviteBoard(userBoardRequestDto, userDetails.getUser());
     }
 }
