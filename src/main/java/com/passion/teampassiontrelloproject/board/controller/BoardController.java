@@ -55,4 +55,9 @@ public class BoardController {
     public List<UserBoardResponseDto> getInviteUser(@PathVariable Long id) {
         return boardService.getInviteUser(id);
     }
+
+    @DeleteMapping("/board/{BoardId}/except/{UserId}")
+    public ResponseEntity<ApiResponseDto> exceptUserBoard(@PathVariable Long BoardId, @PathVariable Long UserId, @AuthenticationPrincipal UserDetailsImpl userDetails){
+        return boardService.exceptUserBoard(BoardId,UserId,userDetails.getUser());
+    }
 }

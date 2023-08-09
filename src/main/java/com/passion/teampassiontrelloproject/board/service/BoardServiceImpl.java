@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -122,6 +123,26 @@ public class BoardServiceImpl implements BoardService{
                 .toList();
     }
 
+    @Override
+    @Transactional
+    public ResponseEntity<ApiResponseDto> exceptUserBoard(Long BoardId, Long UserId, User user){
+        Board board = findBoard(BoardId);
+        User targetUser = userRepository.findById(UserId).orElseThrow(()-> new IllegalArgumentException("존재하지 않는 유저입니다."));
+
+        if(!user.getId().equals(board.getUser().getId())){
+            throw new IllegalArgumentException("유저 관리 권한이 없습니다.");
+        }
+
+        if(targetUser.getId().equals(board.getUser().getId())){
+            throw new IllegalArgumentException("팀장은 삭제할 수 없습니다.");
+        }
+
+        Optional<UserBoard> userBoardOptional = userBoardRepository.findByUserAndBoard(targetUser,board);
+        userBoardOptional.ifPresent(userBoardRepository::delete);
+
+        return ResponseEntity.ok().body(new ApiResponseDto("보드에서 제외하였습니다.",HttpStatus.OK.value()));
+    }
+
     // ===================== 공통 메서드 ===================== //
 
     // 보드 조회
@@ -136,7 +157,6 @@ public class BoardServiceImpl implements BoardService{
         if (user.getUsername().equals(username)) {
             throw new IllegalArgumentException("본인은 초대할 수 없습니다");
         }
-
         return userRepository.findByUsername(username).orElseThrow(() -> new IllegalArgumentException("초대받지 못한 보드입니다."));
     }
 
