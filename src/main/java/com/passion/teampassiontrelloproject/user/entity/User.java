@@ -35,9 +35,6 @@ public class User extends Timestamped {
 
     private boolean isBlocked = false;
 
-    @OneToMany(mappedBy = "user")
-    private List<UserBoard> UserBoards = new ArrayList<>();
-
     public User(String username, String password, String email, UserRoleEnum role) {
         this.username = username;
         this.password = password;

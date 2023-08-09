@@ -16,6 +16,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class BoardService {
@@ -26,51 +28,85 @@ public class BoardService {
 
     @Transactional
     public BoardResponseDto createBoard(BoardRequestDto boardRequestDto, User user) {
+        // 보드 내용 삽입
         Board board = new Board(boardRequestDto, user);
-        board.setUser(user);
 
+        // 유저 보드 관계 매핑
+        new UserBoard(user, board);
+
+        // db 저장
         boardRepository.save(board);
         return new BoardResponseDto(board);
     }
 
     @Transactional
     public BoardResponseDto updateBoard(Long id, BoardRequestDto boardRequestDto, User user) {
+        // 수정할 보드 조회
         Board board = findBoard(id);
-        findUser(user);
 
+        // 초대된 유저인지 체크
+        checkIfInvitedUser(board, user);
+
+        // 수정
         board.update(boardRequestDto);
         return new BoardResponseDto(board);
     }
 
+    @Transactional
     public ResponseEntity<ApiResponseDto> deleteBoard(Long id, User user) {
+        // 삭제할 보드 조회
         Board board = findBoard(id);
-        findUser(user);
 
-        if (!user.getId().equals(board.getUser().getId())) {
-            throw new IllegalArgumentException("작성자만 수정할 수 있습니다.");
-        }
+        // 초대된 유저인지 체크
+        checkIfInvitedUser(board, user);
 
+        // db 저장
         boardRepository.delete(board);
         return ResponseEntity.ok().body(new ApiResponseDto("보드 삭제 완료!", HttpStatus.OK.value()));
     }
 
 
+    @Transactional
     public ResponseEntity<ApiResponseDto> inviteBoard(UserBoardRequestDto userBoardRequestDto) {
-        User user = userRepository.findByUsername(userBoardRequestDto.getInviteUsername()).orElseThrow(
-                ()-> new IllegalArgumentException("존재하지 않는 사용자입니다."));
-        Board board = boardRepository.findByTitle(userBoardRequestDto.getInviteBoardTitle()).orElseThrow(
-                ()-> new IllegalArgumentException("존재하지 않는 보드입니다."));
+        // 초대 유저 조회
+        User targeUser = findUser(userBoardRequestDto.getUsername());
 
-        UserBoard userBoard = new UserBoard(user, board, userBoardRequestDto);
+        // 초대할 보드 조회
+        Board tagetBoard = findBoard(userBoardRequestDto.getBoardId());
+
+        // 유저보드와 관계 매핑
+        UserBoard userBoard = new UserBoard(targeUser, tagetBoard);
+
+        // db 저장
         userBoardRepository.save(userBoard);
-        return ResponseEntity.ok().body(new ApiResponseDto("보드 초대 완료!",HttpStatus.CREATED.value()));
+
+        return ResponseEntity.ok().body(new ApiResponseDto("보드 초대 완료!", HttpStatus.OK.value()));
     }
 
+
+    // ===================== 공통 메서드 ===================== //
+
+    // 보드 조회
     public Board findBoard(Long id) {
         return boardRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 보드입니다."));
     }
 
-    public UserBoard findUser(User user){
-        return userBoardRepository.findByUser(user).orElseThrow(() -> new IllegalArgumentException("초대받지 못한 보드입니다."));
+    // 유저 조회
+    public User findUser(String username) {
+        return userRepository.findByUsername(username).orElseThrow(() -> new IllegalArgumentException("초대받지 못한 보드입니다."));
     }
+
+    // 초대 유저 검증
+    private void checkIfInvitedUser(Board board, User user) {
+        // 조회한 보드에서 유저보드 리스트 가져오기
+        List<UserBoard> userBoards = board.getUserBoards();
+
+        // 유저보드에서 유저이름을 추출하고, 현재 인가된 사용자의 이름과 비교
+        for (UserBoard userBoard : userBoards) {
+            if (!userBoard.getUser().getUsername().equals(user.getUsername())) {
+                throw new IllegalArgumentException("초대된 유저가 아닙니다.");
+            }
+        }
+    }
+
 }

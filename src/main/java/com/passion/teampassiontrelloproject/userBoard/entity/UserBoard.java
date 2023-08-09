@@ -26,13 +26,9 @@ public class UserBoard {
     @JoinColumn(name="board_id")
     private Board board;
 
-    public UserBoard(User user, Board board, UserBoardRequestDto userBoardRequestDto){
+    public UserBoard(User user, Board board) {
         this.user = user;
         this.board = board;
-        this.inviteUsername = userBoardRequestDto.getInviteUsername();
-        this.inviteBoardTitle = userBoardRequestDto.getInviteBoardTitle();
+        board.getUserBoards().add(this);
     }
-
-
-
 }

@@ -5,6 +5,7 @@ import lombok.Getter;
 @Getter
 public class UserBoardRequestDto {
 
-    private String inviteUsername;
-    private String inviteBoardTitle;
+    private String username;
+    private Long boardId;
+
 }

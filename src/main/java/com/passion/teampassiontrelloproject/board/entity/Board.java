@@ -37,7 +37,7 @@ public class Board extends Timestamped {
     @JoinColumn(name="user_id")
     private User user;
 
-    @OneToMany(mappedBy = "board")
+    @OneToMany(mappedBy = "board", cascade = CascadeType.PERSIST, orphanRemoval = true)
     private List<UserBoard> UserBoards = new ArrayList<>();
 
     public Board(BoardRequestDto requestDto, User user) {
@@ -45,11 +45,9 @@ public class Board extends Timestamped {
         this.description = requestDto.getDescription();
         this.backgroundColor = requestDto.getBackgroundColor();
         this.title = requestDto.getTitle();
-    }
-
-    public void setUser(User user){
         this.user = user;
     }
+
     public void update(BoardRequestDto boardRequestDto) {
         this.backgroundColor = boardRequestDto.getBackgroundColor();
         this.description = boardRequestDto.getDescription();
