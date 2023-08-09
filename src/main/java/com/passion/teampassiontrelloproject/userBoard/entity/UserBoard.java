@@ -10,13 +10,14 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor
+@Table(uniqueConstraints = {
+        @UniqueConstraint(name = "UniqueUserBoard", columnNames = {"user_id", "board_id"})
+}) // 동일한 유저가 동일한 보드에 두 번 이상 등록되지 않도록 설정
 public class UserBoard {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String inviteUsername;
-    private String inviteBoardTitle;
 
     @ManyToOne
     @JoinColumn(name ="user_id" )
@@ -26,13 +27,9 @@ public class UserBoard {
     @JoinColumn(name="board_id")
     private Board board;
 
-    public UserBoard(User user, Board board, UserBoardRequestDto userBoardRequestDto){
+    public UserBoard(User user, Board board) {
         this.user = user;
         this.board = board;
-        this.inviteUsername = userBoardRequestDto.getInviteUsername();
-        this.inviteBoardTitle = userBoardRequestDto.getInviteBoardTitle();
+        board.getUserBoards().add(this);
     }
-
-
-
 }
