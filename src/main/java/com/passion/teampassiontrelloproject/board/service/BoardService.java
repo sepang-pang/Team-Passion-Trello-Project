@@ -16,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -106,11 +107,17 @@ public class BoardService {
         // 조회한 보드에서 유저보드 리스트 가져오기
         List<UserBoard> userBoards = board.getUserBoards();
 
-        // 유저보드에서 유저이름을 추출하고, 현재 인가된 사용자의 이름과 비교
+        // 유저 네임 리스트 생성
+        List<String> usernames = new ArrayList<>();
+
+        // 유저보드에서 유저이름을 추출하고, 유저네임 리스트에 저장
         for (UserBoard userBoard : userBoards) {
-            if (!userBoard.getUser().getUsername().equals(user.getUsername())) {
-                throw new IllegalArgumentException("초대된 유저가 아닙니다.");
-            }
+            usernames.add(userBoard.getUser().getUsername());
+        }
+
+        // 현재 인가된 사용자의 이름과 비교
+        if (!usernames.contains(user.getUsername())) {
+            throw new IllegalArgumentException("초대된 유저가 아닙니다.");
         }
     }
 
