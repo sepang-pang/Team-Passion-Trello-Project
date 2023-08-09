@@ -22,7 +22,7 @@ public class ColumnController {
     private final ColumnsServiceImpl columnsService;
 
     @PostMapping("/columns")
-    public ResponseEntity<ColumnsResponseDto> createColumns(@AuthenticationPrincipal UserDetailsImpl userDetails, @RequestBody ColumnsResponseDto requestDto) {
+    public ResponseEntity<ColumnsResponseDto> createColumns(@AuthenticationPrincipal UserDetailsImpl userDetails, @RequestBody ColumnsRequestDto requestDto) {
         ColumnsResponseDto result= columnsService.createColumns(requestDto, userDetails.getUser());
 
         return ResponseEntity.status(HttpStatus.CREATED).body(result);
@@ -44,7 +44,7 @@ public class ColumnController {
         try {
             Columns columns = columnsService.findColumns(id);
             columnsService.deleteColumns(columns, userDetails.getUser());
-            return ResponseEntity.ok().body(new ApiResponseDto("댓글 삭제 성공", HttpStatus.OK.value()));
+            return ResponseEntity.ok().body(new ApiResponseDto("컬럼 삭제 성공", HttpStatus.OK.value()));
         } catch (RejectedExecutionException e) {
             return ResponseEntity.badRequest().body(new ApiResponseDto("작성자만 삭제 할 수 있습니다.", HttpStatus.BAD_REQUEST.value()));
         }

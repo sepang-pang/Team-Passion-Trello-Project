@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor
-@Table(name = "column")
+@Table(name = "columns")
 public class Columns extends TimeStamped {
 
     @Id
@@ -32,6 +32,10 @@ public class Columns extends TimeStamped {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
+
+    public Columns(String title){
+        this.title = title;
+    }
 
     public void setName(String name) {
         this.name = name;

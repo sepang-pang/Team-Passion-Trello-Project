@@ -10,10 +10,6 @@ import org.springframework.transaction.annotation.Transactional;
 public interface ColumnsService {
 
 
-    ColumnsResponseDto createColumns(ColumnsResponseDto requestDto, User user);
-
-    ColumnsResponseDto updateColumns(Columns columns, ColumnsRequestDto requestDto);
-
     ColumnsResponseDto createColumns(ColumnsRequestDto requestDto, User user);
 
     void deleteColumns(Columns columns, User user);
@@ -23,6 +19,5 @@ public interface ColumnsService {
     @Transactional
     ColumnsResponseDto updateColumns(Columns columns, ColumnsRequestDto requestDto, User user);
 
-    Board findBoard(long id);
 }
 
