@@ -1,10 +1,11 @@
 package com.passion.teampassiontrelloproject.board.dto;
 
 import com.passion.teampassiontrelloproject.board.entity.Board;
+import com.passion.teampassiontrelloproject.common.dto.ApiResponseDto;
 import lombok.Getter;
 
 @Getter
-public class BoardResponseDto {
+public class BoardResponseDto extends ApiResponseDto {
 
     private Long id;
     private String name;

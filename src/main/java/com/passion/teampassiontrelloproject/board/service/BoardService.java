@@ -42,6 +42,22 @@ public class BoardService {
         return new BoardResponseDto(board);
     }
 
+    // 보드 조회
+    public List<BoardResponseDto> getBoard(User user) {
+       return boardRepository.findByUserId(user.getId()).stream().map(BoardResponseDto::new).toList();
+    }
+
+    // 특정 보드 조회
+    public ResponseEntity<ApiResponseDto> getIdBoard(Long id, User user) {
+        List<BoardResponseDto> getBoards = getBoard(user);
+        for(BoardResponseDto getBoard : getBoards){
+            if(getBoard.getId().equals(id)){
+                return ResponseEntity.ok().body(new BoardResponseDto(findBoard(id)));
+            }
+        }
+        return ResponseEntity.badRequest().body(new ApiResponseDto("초대받지 못한 보드입니다.",HttpStatus.BAD_REQUEST.value()));
+    }
+
     // 보드 수정
     @Transactional
     public BoardResponseDto updateBoard(Long id, BoardRequestDto boardRequestDto, User user) {
