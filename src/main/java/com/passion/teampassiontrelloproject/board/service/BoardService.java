@@ -8,6 +8,7 @@ import com.passion.teampassiontrelloproject.common.dto.ApiResponseDto;
 import com.passion.teampassiontrelloproject.user.entity.User;
 import com.passion.teampassiontrelloproject.user.repository.UserRepository;
 import com.passion.teampassiontrelloproject.userBoard.dto.UserBoardRequestDto;
+import com.passion.teampassiontrelloproject.userBoard.dto.UserBoardResponseDto;
 import com.passion.teampassiontrelloproject.userBoard.entity.UserBoard;
 import com.passion.teampassiontrelloproject.userBoard.repository.UserBoardRepository;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +28,7 @@ public class BoardService {
     private final UserBoardRepository userBoardRepository;
     private final UserRepository userRepository;
 
+    // 보드 생성
     @Transactional
     public BoardResponseDto createBoard(BoardRequestDto boardRequestDto, User user) {
         // 보드 내용 삽입
@@ -40,6 +42,7 @@ public class BoardService {
         return new BoardResponseDto(board);
     }
 
+    // 보드 수정
     @Transactional
     public BoardResponseDto updateBoard(Long id, BoardRequestDto boardRequestDto, User user) {
         // 수정할 보드 조회
@@ -53,6 +56,7 @@ public class BoardService {
         return new BoardResponseDto(board);
     }
 
+    // 보드 삭제
     @Transactional
     public ResponseEntity<ApiResponseDto> deleteBoard(Long id, User user) {
         // 삭제할 보드 조회
@@ -61,12 +65,13 @@ public class BoardService {
         // 초대된 유저인지 체크
         checkInvitedUser(board, user);
 
-        // db 저장
+        // 삭제
         boardRepository.delete(board);
         return ResponseEntity.ok().body(new ApiResponseDto("보드 삭제 완료!", HttpStatus.OK.value()));
     }
 
 
+    // 보드에 유저 초대
     @Transactional
     public ResponseEntity<ApiResponseDto> inviteBoard(UserBoardRequestDto userBoardRequestDto, User user) {
         // 초대 유저 조회
@@ -84,6 +89,15 @@ public class BoardService {
         return ResponseEntity.ok().body(new ApiResponseDto("보드 초대 완료!", HttpStatus.OK.value()));
     }
 
+    // 초대된 유저 조회
+    public List<UserBoardResponseDto> getInviteUser(Long id) {
+        // 보드 조회
+        Board board = findBoard(id);
+
+        return board.getUserBoards().stream()
+                .map(userBoard -> new UserBoardResponseDto(userBoard.getUser().getUsername()))
+                .toList();
+    }
 
     // ===================== 공통 메서드 ===================== //
 
