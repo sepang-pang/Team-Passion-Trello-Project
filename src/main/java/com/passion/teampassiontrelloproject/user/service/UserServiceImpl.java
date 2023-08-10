@@ -101,10 +101,8 @@ public class UserServiceImpl implements UserService{
             throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
         }
 
-        // 회원삭제
-//        userRepositoryCustom.deleteUserUsingFetchAllChildren(user);
-        userRepository.delete(user);
-
+        user.withdrawal();
+        userRepository.save(user);
         return ResponseEntity.ok().body(new ApiResponseDto("회원탈퇴 성공", 200));
     }
 

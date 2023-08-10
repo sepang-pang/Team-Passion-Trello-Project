@@ -38,15 +38,19 @@ public class User extends Timestamped {
     @Enumerated(value = EnumType.STRING)
     private UserRoleEnum role;
 
+    // 블랙리스트 상태값
     private boolean isBlocked = false;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
+    // soft-delete 상태값
+    private boolean isDeleted = false;
+
+    @OneToMany(mappedBy = "user")
     private List<Board> boards;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "user")
     private List<Columns> columns;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "user")
     private List<Card> cards;
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.REMOVE)
@@ -71,5 +75,9 @@ public class User extends Timestamped {
 
     public void updatePassword(String newPassword) {
         this.password = newPassword;
+    }
+
+    public void withdrawal() {
+        this.isDeleted = true;
     }
 }
