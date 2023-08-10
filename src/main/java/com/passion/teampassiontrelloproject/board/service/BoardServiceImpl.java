@@ -162,7 +162,7 @@ public class BoardServiceImpl implements BoardService{
         if (user.getUsername().equals(username)) {
             throw new IllegalArgumentException("본인은 초대할 수 없습니다");
         }
-        return userRepository.findByUsername(username).orElseThrow(() -> new IllegalArgumentException("초대받지 못한 보드입니다."));
+        return userRepository.findByUsernameIsDeletedFalse(username).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 유저입니다."));
     }
 
     // 초대 유저 검증

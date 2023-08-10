@@ -1,12 +1,11 @@
 package com.passion.teampassiontrelloproject.user.repository;
 
 import com.passion.teampassiontrelloproject.user.entity.User;
-import org.springframework.stereotype.Repository;
 
-@Repository
+import java.util.Optional;
+
 public interface UserRepositoryCustom {
 
-    public User fetchAllChildrenWithUser(Long userId);
-    public void deleteUserUsingFetchAllChildren(User userId);
-
+    public Optional<User> findByUsernameIsDeletedFalse(String username);
+//    public User fetchAllChildrenWithUser(Long userId);
 }

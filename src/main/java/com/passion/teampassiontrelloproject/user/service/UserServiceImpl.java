@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,7 +31,6 @@ import java.util.Optional;
 public class UserServiceImpl implements UserService{
 
     private final UserRepository userRepository;
-    private final UserRepositoryCustom userRepositoryCustom;
     private final PasswordManagerRepository passwordManagerRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
@@ -47,7 +47,7 @@ public class UserServiceImpl implements UserService{
 
 
         // 회원 중복 확인
-        Optional<User> checkUsername = userRepository.findByUsername(username);
+        Optional<User> checkUsername = userRepository.findByUsernameIsDeletedFalse(username);
         if (checkUsername.isPresent()) {
             throw new DuplicateException("중복되는 회원입니다.");
         }
