@@ -3,6 +3,7 @@ package com.passion.teampassiontrelloproject.user.controller;
 import com.passion.teampassiontrelloproject.common.dto.ApiResponseDto;
 import com.passion.teampassiontrelloproject.common.security.UserDetailsImpl;
 import com.passion.teampassiontrelloproject.user.dto.ChangePasswordDto;
+import com.passion.teampassiontrelloproject.user.dto.CheckPasswordDto;
 import com.passion.teampassiontrelloproject.user.dto.SignupRequestDto;
 import com.passion.teampassiontrelloproject.user.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -27,6 +28,7 @@ public class UserController {
         this.userService = userService;
     }
 
+    // 회원가입
     @PostMapping("/user/signup")
     public ResponseEntity<ApiResponseDto> signup(@RequestBody @Valid SignupRequestDto requestDto, BindingResult bindingResult) {
 
@@ -40,11 +42,19 @@ public class UserController {
         return userService.signup(requestDto);
     }
 
+    // 회원탈퇴
+    @DeleteMapping("/user/withdrawal")
+    public ResponseEntity<ApiResponseDto> withdrawal(@RequestBody CheckPasswordDto checkPasswordDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return userService.withdrawal(checkPasswordDto, userDetails.getUser());
+    }
+
+    // 로그아웃
     @DeleteMapping("/user/logout")
     public ResponseEntity<ApiResponseDto> logout(HttpServletRequest request) {
         return userService.logOut(request);
     }
 
+    // 비밀번호 변경
     @PutMapping("/user/change-password")
     private ResponseEntity<ApiResponseDto> changePassword(@RequestBody ChangePasswordDto changePasswordDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return userService.changePassword(changePasswordDto, userDetails.getUser());
