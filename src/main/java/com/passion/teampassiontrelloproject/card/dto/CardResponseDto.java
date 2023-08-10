@@ -16,6 +16,7 @@ public class CardResponseDto {
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
 
+
     public CardResponseDto(Card card) {
         this.card_id = getCard_id();
         this.title = card.getTitle();
