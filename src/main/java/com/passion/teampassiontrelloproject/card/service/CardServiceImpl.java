@@ -84,8 +84,14 @@ public class CardServiceImpl implements CardService {
         // 할당 할 카드 조회
         Card tagetCard = findCard(cardCollaboratorsRequestDto.getCardId());
 
+        // 본인이 생성한 카드가 아닌 경우, 다른 유저를 할당 할 수 없음
+        if (!tagetCard.getUser().getUsername().equals(user.getUsername())) {
+            throw new IllegalArgumentException("카드를 생성한 유저가 아닙니다.");
+        }
+
         // CardCollaborators 와 관계 매핑
         CardCollaborators cardCollaborators = new CardCollaborators(collaborator, tagetCard);
+
 
         // db 저장
         cardCollaboratorRepository.save(cardCollaborators);
