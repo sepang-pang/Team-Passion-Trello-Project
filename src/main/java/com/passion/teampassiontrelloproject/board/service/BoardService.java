@@ -21,6 +21,7 @@ public interface BoardService {
     ResponseEntity<ApiResponseDto> deleteBoard(Long id, User user);
     ResponseEntity<ApiResponseDto> inviteBoard(UserBoardRequestDto userBoardRequestDto, User user);
     List<UserBoardResponseDto> getInviteUser(Long id);
+    ResponseEntity<ApiResponseDto> exceptUserBoard(Long BoardId, Long UserId, User user);
     Board findBoard(Long id);
     User findUser(User user, String username);
     void checkInvitedUser(Board board, User user);
