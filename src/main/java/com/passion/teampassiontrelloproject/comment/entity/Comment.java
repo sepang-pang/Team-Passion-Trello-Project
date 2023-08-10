@@ -1,11 +1,15 @@
 package com.passion.teampassiontrelloproject.comment.entity;
 
 import com.passion.teampassiontrelloproject.card.entity.Card;
+import com.passion.teampassiontrelloproject.comment2.entity.Comment2;
 import com.passion.teampassiontrelloproject.common.entity.Timestamped;
 import com.passion.teampassiontrelloproject.user.entity.User;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -30,6 +34,9 @@ public class Comment extends Timestamped {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
+
+    @OneToMany(mappedBy = "comment", cascade = CascadeType.REMOVE)
+    private List<Comment2> Comment2List = new ArrayList<>();
 
     public void setUsername(String username) {
         this.username = username;
