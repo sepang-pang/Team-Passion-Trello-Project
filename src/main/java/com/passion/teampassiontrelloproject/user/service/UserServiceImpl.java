@@ -11,6 +11,7 @@ import com.passion.teampassiontrelloproject.user.dto.SignupRequestDto;
 import com.passion.teampassiontrelloproject.user.entity.User;
 import com.passion.teampassiontrelloproject.user.entity.UserRoleEnum;
 import com.passion.teampassiontrelloproject.user.repository.UserRepository;
+import com.passion.teampassiontrelloproject.user.repository.UserRepositoryCustom;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,6 +30,7 @@ import java.util.Optional;
 public class UserServiceImpl implements UserService{
 
     private final UserRepository userRepository;
+    private final UserRepositoryCustom userRepositoryCustom;
     private final PasswordManagerRepository passwordManagerRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
@@ -38,6 +40,7 @@ public class UserServiceImpl implements UserService{
 
     // 회원가입
     @Override
+    @Transactional
     public ResponseEntity<ApiResponseDto> signup(SignupRequestDto requestDto) {
         String username = requestDto.getUsername();
         String password = passwordEncoder.encode(requestDto.getPassword());
@@ -81,8 +84,11 @@ public class UserServiceImpl implements UserService{
         return ResponseEntity.ok().body(new ApiResponseDto("회원가입 성공", 200));
     }
 
-    @Override
+
+
     // 회원탈퇴
+    @Override
+    @Transactional
     public ResponseEntity<ApiResponseDto> withdrawal(CheckPasswordDto checkPasswordDto, User user) {
 
         // 비밀번호 확인, 첫 번째 입력
@@ -96,6 +102,7 @@ public class UserServiceImpl implements UserService{
         }
 
         // 회원삭제
+//        userRepositoryCustom.deleteUserUsingFetchAllChildren(user);
         userRepository.delete(user);
 
         return ResponseEntity.ok().body(new ApiResponseDto("회원탈퇴 성공", 200));

@@ -38,7 +38,7 @@ public class Board extends Timestamped {
     private User user;
 
     @OneToMany(mappedBy = "board", cascade = CascadeType.PERSIST, orphanRemoval = true)
-    private List<UserBoard> UserBoards = new ArrayList<>();
+    private List<UserBoard> userBoards = new ArrayList<>();
 
     public Board(BoardRequestDto requestDto, User user) {
         this.name = user.getUsername();
