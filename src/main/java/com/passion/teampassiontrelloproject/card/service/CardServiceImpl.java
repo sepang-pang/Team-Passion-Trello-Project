@@ -108,8 +108,6 @@ public class CardServiceImpl implements CardService {
 
     private Card findCard(Long cardId) {
         return cardRepository.findById(cardId).orElseThrow(() ->
-    public Card findCard(Long id) {
-        return cardRepository.findById(id).orElseThrow(() ->
                 new IllegalArgumentException("선택한 카드는 존재하지 않습니다.")
         );
     }
@@ -152,6 +150,4 @@ public class CardServiceImpl implements CardService {
             throw new IllegalArgumentException("할당된 유저가 아닙니다.");
         }
     }
-
-
 }
