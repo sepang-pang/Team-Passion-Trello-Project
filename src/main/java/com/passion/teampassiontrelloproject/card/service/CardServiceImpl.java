@@ -58,7 +58,7 @@ public class CardServiceImpl implements CardService {
         }
     }
 
-    private Card findCard(Long id) {
+    public Card findCard(Long id) {
         return cardRepository.findById(id).orElseThrow(() ->
                 new IllegalArgumentException("선택한 카드는 존재하지 않습니다.")
         );
