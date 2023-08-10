@@ -137,7 +137,7 @@ public class BoardServiceImpl implements BoardService{
             throw new IllegalArgumentException("팀장은 삭제할 수 없습니다.");
         }
 
-        Optional<UserBoard> userBoardOptional = userBoardRepository.findByUserAndBoard(targetUser,board);
+        Optional<UserBoard> userBoardOptional = userBoardRepository.findByUserIdAndBoardId(targetUser.getId(), board.getId());
         userBoardOptional.ifPresent(userBoardRepository::delete);
 
         return ResponseEntity.ok().body(new ApiResponseDto("보드에서 제외하였습니다.",HttpStatus.OK.value()));
