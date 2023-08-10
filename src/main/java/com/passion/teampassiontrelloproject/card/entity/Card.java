@@ -1,12 +1,18 @@
 package com.passion.teampassiontrelloproject.card.entity;
 
+import com.passion.teampassiontrelloproject.board.entity.Board;
 import com.passion.teampassiontrelloproject.card.dto.CardRequestDto;
+import com.passion.teampassiontrelloproject.column.entity.Columns;
+import com.passion.teampassiontrelloproject.comment.entity.Comment;
 import com.passion.teampassiontrelloproject.common.entity.Timestamped;
 import com.passion.teampassiontrelloproject.user.entity.User;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -30,6 +36,13 @@ public class Card extends Timestamped {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "userId", nullable = false)
     private User user;
+
+    @ManyToOne
+    @JoinColumn(name = "columnsId")
+    private Columns columns;
+
+    @OneToMany(mappedBy = "card", cascade = CascadeType.REMOVE)
+    private List<Comment> CommentList = new ArrayList<>();
 
     public Card(CardRequestDto cardRequestDto, User user) {
         this.title = cardRequestDto.getTitle();
