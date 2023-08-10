@@ -39,6 +39,8 @@ public class QUser extends EntityPathBase<User> {
 
     public final BooleanPath isBlocked = createBoolean("isBlocked");
 
+    public final BooleanPath isDeleted = createBoolean("isDeleted");
+
     //inherited
     public final DateTimePath<java.time.LocalDateTime> modifiedAt = _super.modifiedAt;
 
