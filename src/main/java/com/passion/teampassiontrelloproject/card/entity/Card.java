@@ -47,14 +47,6 @@ public class Card extends Timestamped {
     private List<CardCollaborators> CardCollaborators = new ArrayList<>();
 
     public Card(CardRequestDto cardRequestDto, User user, Columns columns) {
-    @ManyToOne
-    @JoinColumn(name = "columnsId")
-    private Columns columns;
-
-    @OneToMany(mappedBy = "card", cascade = CascadeType.REMOVE)
-    private List<Comment> CommentList = new ArrayList<>();
-
-    public Card(CardRequestDto cardRequestDto, User user) {
         this.title = cardRequestDto.getTitle();
         this.description = cardRequestDto.getDescription();
         this.background_color = cardRequestDto.getBackground_color();
