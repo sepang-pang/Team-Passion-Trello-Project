@@ -106,6 +106,11 @@ public class BoardServiceImpl implements BoardService{
         // 유저보드와 관계 매핑
         UserBoard userBoard = new UserBoard(targeUser, tagetBoard);
 
+        // 보드 생성자(팀장)만 유저 초대
+        if(!user.getId().equals(tagetBoard.getUser().getId())){
+            throw new IllegalArgumentException("초대 권한이 없습니다.");
+        }
+
         // db 저장
         userBoardRepository.save(userBoard);
 
