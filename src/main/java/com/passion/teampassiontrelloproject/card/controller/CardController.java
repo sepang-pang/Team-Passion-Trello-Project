@@ -3,6 +3,8 @@ package com.passion.teampassiontrelloproject.card.controller;
 import com.passion.teampassiontrelloproject.card.dto.CardRequestDto;
 import com.passion.teampassiontrelloproject.card.dto.CardResponseDto;
 import com.passion.teampassiontrelloproject.card.service.CardServiceImpl;
+import com.passion.teampassiontrelloproject.cardCollaborators.dto.CardCollaboratorsRequestDto;
+import com.passion.teampassiontrelloproject.cardCollaborators.dto.CardCollaboratorsResponseDto;
 import com.passion.teampassiontrelloproject.common.dto.ApiResponseDto;
 import com.passion.teampassiontrelloproject.common.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
@@ -11,6 +13,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/card")
@@ -18,9 +22,9 @@ public class CardController {
     private final CardServiceImpl cardService;
 
     // 카드 선택조회
-    @GetMapping("/{id}")
-    public ResponseEntity<CardResponseDto> getCardById(@PathVariable Long id) {
-        CardResponseDto card = cardService.getCardById(id);
+    @GetMapping("/{cardId}")
+    public ResponseEntity<CardResponseDto> getCardById(@PathVariable Long cardId) {
+        CardResponseDto card = cardService.getCardById(cardId);
         if (card != null) {
             return new ResponseEntity<>(card, HttpStatus.OK);
         } else {
@@ -30,15 +34,15 @@ public class CardController {
 
     // 카드 작성
     @PostMapping
-    public ResponseEntity<CardResponseDto> createCard(@RequestBody CardRequestDto cardRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        CardResponseDto createCard = cardService.createdCard(cardRequestDto, userDetails.getUser());
-        return new ResponseEntity<>(createCard, HttpStatus.CREATED);
+    public ResponseEntity<CardResponseDto> createdCard(@RequestBody CardRequestDto cardRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        CardResponseDto createdCard = cardService.createdCard(cardRequestDto, cardRequestDto.getBoardId(), cardRequestDto.getColumnId(), userDetails.getUser());
+        return new ResponseEntity<>(createdCard, HttpStatus.CREATED);
     }
 
     // 카드 수정
-    @PutMapping("/{id}")
-    public ResponseEntity<CardResponseDto> updateCard(@PathVariable Long id, @RequestBody CardRequestDto cardRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        CardResponseDto updateCard = cardService.updateCard(id, cardRequestDto, userDetails.getUser());
+    @PutMapping("/{cardId}")
+    public ResponseEntity<CardResponseDto> updateCard(@PathVariable Long cardId, @RequestBody CardRequestDto cardRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        CardResponseDto updateCard = cardService.updateCard(cardRequestDto, userDetails.getUser(), cardRequestDto.getBoardId(), cardId);
         if (updateCard != null) {
             return new ResponseEntity<>(updateCard, HttpStatus.OK);
         } else {
@@ -47,10 +51,22 @@ public class CardController {
     }
 
     // 카드 삭제
-    @DeleteMapping("/{id}")
-    public ResponseEntity<ApiResponseDto> deletePost(@PathVariable Long id, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        cardService.deleteCard(id, userDetails.getUser());
+    @DeleteMapping("/{cardId}")
+    public ResponseEntity<ApiResponseDto> deletePost(@PathVariable Long cardId, @RequestBody CardRequestDto cardRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        cardService.deleteCard(userDetails.getUser(), cardRequestDto.getBoardId(), cardId);
         return ResponseEntity.ok().body(new ApiResponseDto("카드 삭제 성공", 200));
+    }
+
+    // 작업자 할당
+    @PostMapping("/collaborator")
+    public ResponseEntity<ApiResponseDto> collaborator(@RequestBody CardCollaboratorsRequestDto cardCollaboratorsRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return cardService.collaborator(cardCollaboratorsRequestDto, userDetails.getUser(), cardCollaboratorsRequestDto.getBoardId());
+    }
+
+    // 할당 된 유저 조회
+    @GetMapping("/collaborator/{id}")
+    public List<CardCollaboratorsResponseDto> getCollaborator(@PathVariable Long id) {
+        return cardService.getCollaborator(id);
     }
 }
 
