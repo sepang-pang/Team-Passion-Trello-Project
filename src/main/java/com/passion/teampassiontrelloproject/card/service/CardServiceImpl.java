@@ -103,11 +103,13 @@ public class CardServiceImpl implements CardService {
                 .map(cardCollaborators -> new CardCollaboratorsResponseDto(cardCollaborators.getUser().getUsername()))
                 .toList();
     }
-
+  
     // ===================== 공통 메서드 ===================== //
 
     private Card findCard(Long cardId) {
         return cardRepository.findById(cardId).orElseThrow(() ->
+    public Card findCard(Long id) {
+        return cardRepository.findById(id).orElseThrow(() ->
                 new IllegalArgumentException("선택한 카드는 존재하지 않습니다.")
         );
     }

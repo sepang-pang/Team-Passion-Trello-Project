@@ -41,6 +41,10 @@ public class Columns extends Timestamped {
     @OneToMany(mappedBy = "columns", cascade = CascadeType.PERSIST, orphanRemoval = true)
     private List<Card> cardList = new ArrayList<>();
 
+    @OneToMany(mappedBy = "columns", cascade = CascadeType.REMOVE)
+    private List<Card> CardList = new ArrayList<>();
+
+
     public Columns(String title){
         this.title = title;
     }

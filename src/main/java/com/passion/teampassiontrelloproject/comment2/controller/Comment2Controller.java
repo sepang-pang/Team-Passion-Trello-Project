@@ -1,9 +1,9 @@
-package com.passion.teampassiontrelloproject.comment.controller;
+package com.passion.teampassiontrelloproject.comment2.controller;
 
-import com.passion.teampassiontrelloproject.comment.dto.CommentRequestDto;
-import com.passion.teampassiontrelloproject.comment.dto.CommentResponseDto;
-import com.passion.teampassiontrelloproject.comment.entity.Comment;
-import com.passion.teampassiontrelloproject.comment.service.CommentServiceImpl;
+import com.passion.teampassiontrelloproject.comment2.dto.Comment2RequestDto;
+import com.passion.teampassiontrelloproject.comment2.dto.Comment2ResponseDto;
+import com.passion.teampassiontrelloproject.comment2.entity.Comment2;
+import com.passion.teampassiontrelloproject.comment2.service.Comment2ServiceImpl;
 import com.passion.teampassiontrelloproject.common.dto.ApiResponseDto;
 import com.passion.teampassiontrelloproject.common.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
@@ -15,31 +15,31 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api")
 @RequiredArgsConstructor
-public class CommentController {
+public class Comment2Controller {
 
-    private final CommentServiceImpl commentService;
+    private final Comment2ServiceImpl commentService;
 
-    @PostMapping("/comment")
-    public ResponseEntity<CommentResponseDto> createComment(@AuthenticationPrincipal UserDetailsImpl userDetails, @RequestBody CommentRequestDto requestDto) {
-        CommentResponseDto result = commentService.createComment(requestDto, userDetails.getUser());
+    @PostMapping("/comment2")
+    public ResponseEntity<Comment2ResponseDto> createComment(@AuthenticationPrincipal UserDetailsImpl userDetails, @RequestBody Comment2RequestDto requestDto) {
+        Comment2ResponseDto result = commentService.createComment(requestDto, userDetails.getUser());
         return ResponseEntity.status(HttpStatus.CREATED).body(result);
     }
 
-    @PutMapping("/comment/{id}")
-    public ResponseEntity<ApiResponseDto> updateComment(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long id, @RequestBody CommentRequestDto requestDto) {
-        Comment comment = commentService.findComment(id);
+    @PutMapping("/comment2/{id}")
+    public ResponseEntity<ApiResponseDto> updateComment(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long id, @RequestBody Comment2RequestDto requestDto) {
+        Comment2 comment = commentService.findComment(id);
 
         if (!comment.getUser().getId().equals(userDetails.getUser().getId())) {
             throw new IllegalArgumentException("작성자만 수정 할 수 있습니다.");
         }
 
-        CommentResponseDto result = commentService.updateComment(comment, requestDto, userDetails.getUser());
+        Comment2ResponseDto result = commentService.updateComment(comment, requestDto, userDetails.getUser());
         return ResponseEntity.ok().body(result);
     }
 
-    @DeleteMapping("/comment/{id}")
+    @DeleteMapping("/comment2/{id}")
     public ResponseEntity<ApiResponseDto> deleteComment(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long id) {
-        Comment comment = commentService.findComment(id);
+        Comment2 comment = commentService.findComment(id);
 
         if (!comment.getUser().getId().equals(userDetails.getUser().getId())) {
             throw new IllegalArgumentException("작성자만 삭제 할 수 있습니다.");
