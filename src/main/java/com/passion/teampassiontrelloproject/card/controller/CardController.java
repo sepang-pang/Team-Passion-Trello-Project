@@ -1,5 +1,6 @@
 package com.passion.teampassiontrelloproject.card.controller;
 
+import com.google.protobuf.Api;
 import com.passion.teampassiontrelloproject.card.dto.CardRequestDto;
 import com.passion.teampassiontrelloproject.card.dto.CardResponseDto;
 import com.passion.teampassiontrelloproject.card.service.CardServiceImpl;
@@ -68,6 +69,8 @@ public class CardController {
     public List<CardCollaboratorsResponseDto> getCollaborator(@PathVariable Long id) {
         return cardService.getCollaborator(id);
     }
+
+    // 작업자 변경
 }
 
 
