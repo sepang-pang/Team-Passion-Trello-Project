@@ -67,7 +67,7 @@ public class QCard extends EntityPathBase<Card> {
     public QCard(Class<? extends Card> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
         this.columns = inits.isInitialized("columns") ? new com.passion.teampassiontrelloproject.column.entity.QColumns(forProperty("columns"), inits.get("columns")) : null;
-        this.user = inits.isInitialized("user") ? new com.passion.teampassiontrelloproject.user.entity.QUser(forProperty("user"), inits.get("user")) : null;
+        this.user = inits.isInitialized("user") ? new com.passion.teampassiontrelloproject.user.entity.QUser(forProperty("user")) : null;
     }
 
 }

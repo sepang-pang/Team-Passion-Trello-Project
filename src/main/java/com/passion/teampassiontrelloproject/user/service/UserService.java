@@ -39,4 +39,6 @@ public interface UserService {
     // 비밀번호 변경
     public ResponseEntity<ApiResponseDto> changePassword(ChangePasswordDto changePasswordDto, User user);
 
+    public User findByUsername (String username);
+
 }

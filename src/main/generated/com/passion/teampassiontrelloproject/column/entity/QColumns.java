@@ -26,6 +26,10 @@ public class QColumns extends EntityPathBase<Columns> {
 
     public final com.passion.teampassiontrelloproject.board.entity.QBoard board;
 
+    public final ListPath<com.passion.teampassiontrelloproject.card.entity.Card, com.passion.teampassiontrelloproject.card.entity.QCard> CardList = this.<com.passion.teampassiontrelloproject.card.entity.Card, com.passion.teampassiontrelloproject.card.entity.QCard>createList("CardList", com.passion.teampassiontrelloproject.card.entity.Card.class, com.passion.teampassiontrelloproject.card.entity.QCard.class, PathInits.DIRECT2);
+
+    public final ListPath<com.passion.teampassiontrelloproject.card.entity.Card, com.passion.teampassiontrelloproject.card.entity.QCard> cardList = this.<com.passion.teampassiontrelloproject.card.entity.Card, com.passion.teampassiontrelloproject.card.entity.QCard>createList("cardList", com.passion.teampassiontrelloproject.card.entity.Card.class, com.passion.teampassiontrelloproject.card.entity.QCard.class, PathInits.DIRECT2);
+
     //inherited
     public final DateTimePath<java.time.LocalDateTime> createdAt = _super.createdAt;
 

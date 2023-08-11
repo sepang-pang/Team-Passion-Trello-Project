@@ -17,13 +17,41 @@ public class UserRepositoryCustomImpl implements UserRepositoryCustom {
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
-    public Optional<User> findByUsernameIsDeletedFalse(String username) {
+    public Optional<User> findByUsernameAndIsDeletedFalse(String username) {
         return
                 Optional.ofNullable(
                         jpaQueryFactory
                                 .selectFrom(user)
                                 .where(
                                         user.username.eq(username),
+                                        user.isBlocked.eq(false)
+                                )
+                                .fetchOne()
+                );
+    }
+
+    @Override
+    public Optional<User> findByUsernameAndIsDeletedTrue(String username) {
+        return
+                Optional.ofNullable(
+                        jpaQueryFactory
+                                .selectFrom(user)
+                                .where(
+                                        user.username.eq(username),
+                                        user.isBlocked.eq(true)
+                                )
+                                .fetchOne()
+                );
+    }
+
+    @Override
+    public Optional<User> findByUserIdAndIsDeletedFalse(Long id) {
+        return
+                Optional.ofNullable(
+                        jpaQueryFactory
+                                .selectFrom(user)
+                                .where(
+                                        user.id.eq(id),
                                         user.isBlocked.eq(false)
                                 )
                                 .fetchOne()
