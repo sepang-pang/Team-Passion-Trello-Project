@@ -126,7 +126,7 @@ public class CardServiceImpl implements CardService {
 
     // 유저 조회
     public User findUser(User user, String username, Long boardId) {
-        User user1 = userRepository.findByUsername(username).orElseThrow(()->
+        User user1 = userRepository.findByUsernameAndIsDeletedFalse(username).orElseThrow(()->
                 new IllegalArgumentException("존재하지 않는 유저입니다"));
 
         authority(user1, boardId);
@@ -134,7 +134,7 @@ public class CardServiceImpl implements CardService {
             throw new IllegalArgumentException("본인은 할당 할 수 없습니다");
         }
 
-        return userRepository.findByUsername(username).orElseThrow(() -> new IllegalArgumentException("할당되지 않은 카드입니다."));
+        return userRepository.findByUsernameAndIsDeletedFalse(username).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 유저입니다."));
     }
 
     // 할당 된 유저 검증

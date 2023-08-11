@@ -12,6 +12,7 @@ import com.passion.teampassiontrelloproject.user.entity.User;
 import com.passion.teampassiontrelloproject.user.entity.UserRoleEnum;
 import com.passion.teampassiontrelloproject.user.repository.UserRepository;
 import com.passion.teampassiontrelloproject.user.repository.UserRepositoryCustom;
+import com.passion.teampassiontrelloproject.withdrawn.service.WithdrawnUserService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,6 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,7 +32,7 @@ import java.util.Optional;
 public class UserServiceImpl implements UserService{
 
     private final UserRepository userRepository;
-    private final UserRepositoryCustom userRepositoryCustom;
+    private final WithdrawnUserService withdrawnUserService;
     private final PasswordManagerRepository passwordManagerRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
@@ -47,7 +49,7 @@ public class UserServiceImpl implements UserService{
 
 
         // 회원 중복 확인
-        Optional<User> checkUsername = userRepository.findByUsername(username);
+        Optional<User> checkUsername = userRepository.findByUsernameAndIsDeletedFalse(username);
         if (checkUsername.isPresent()) {
             throw new DuplicateException("중복되는 회원입니다.");
         }
@@ -101,7 +103,13 @@ public class UserServiceImpl implements UserService{
             throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
         }
 
-        user.withdrawal();
+        // 유저의 정보를 백업
+        withdrawnUserService.backUpUserDate(user);
+
+        // 탈퇴 메서드
+        user.performWithdrawal();
+
+        // DB 반영
         userRepository.save(user);
         return ResponseEntity.ok().body(new ApiResponseDto("회원탈퇴 성공", 200));
     }
@@ -163,5 +171,11 @@ public class UserServiceImpl implements UserService{
         // 상태값 반환
         return ResponseEntity.ok().body(new ApiResponseDto("비밀번호 변경 성공", 200));
 
+    }
+
+    // findUSer 메서드
+    public User findByUsername (String username) {
+        return userRepository.findByUsernameAndIsDeletedTrue(username)
+                .orElseThrow(()-> new IllegalArgumentException("탈퇴한 유저가 아닙니다."));
     }
 }
