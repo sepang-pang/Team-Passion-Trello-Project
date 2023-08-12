@@ -47,7 +47,8 @@ public class BoardServiceImpl implements BoardService{
     // 보드 조회
     @Override
     public List<BoardResponseDto> getBoard(User user) {
-       return boardRepository.findByUserId(user.getId()).stream().map(BoardResponseDto::new).toList();
+       return boardRepository.findByUserId(user.getId())
+               .stream().map(BoardResponseDto::new).toList();
     }
 
     // 특정 보드 조회
@@ -132,7 +133,7 @@ public class BoardServiceImpl implements BoardService{
     @Transactional
     public ResponseEntity<ApiResponseDto> exceptUserBoard(Long BoardId, Long UserId, User user){
         Board board = findBoard(BoardId);
-        User targetUser = userRepository.findById(UserId).orElseThrow(()-> new IllegalArgumentException("존재하지 않는 유저입니다."));
+        User targetUser = userRepository.findByUserIdAndIsDeletedFalse(UserId).orElseThrow(()-> new IllegalArgumentException("존재하지 않는 유저입니다."));
 
         if(!user.getId().equals(board.getUser().getId())){
             throw new IllegalArgumentException("유저 관리 권한이 없습니다.");
@@ -162,7 +163,7 @@ public class BoardServiceImpl implements BoardService{
         if (user.getUsername().equals(username)) {
             throw new IllegalArgumentException("본인은 초대할 수 없습니다");
         }
-        return userRepository.findByUsername(username).orElseThrow(() -> new IllegalArgumentException("초대받지 못한 보드입니다."));
+        return userRepository.findByUsernameAndIsDeletedFalse(username).orElseThrow(() -> new IllegalArgumentException("초대받지 못한 보드입니다."));
     }
 
     // 초대 유저 검증

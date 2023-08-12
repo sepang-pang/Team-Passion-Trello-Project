@@ -1,6 +1,8 @@
 package com.passion.teampassiontrelloproject.common.security;
 
 import com.passion.teampassiontrelloproject.common.blacklist.repository.UserBlackListRepository;
+import com.passion.teampassiontrelloproject.user.service.UserService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -15,17 +17,13 @@ import org.springframework.stereotype.Component;
 
 @Component
 @Slf4j(topic = "Authentication 관련 로그")
+@RequiredArgsConstructor
 public class CustomAuthenticationProvider implements AuthenticationProvider {
 
     private final UserDetailsService userDetailsService;
     private final UserBlackListRepository userBlackListRepository;
     private final PasswordEncoder passwordEncoder;
-
-    public CustomAuthenticationProvider(UserDetailsService userDetailsService, UserBlackListRepository userBlackListRepository, PasswordEncoder passwordEncoder) {
-        this.userDetailsService = userDetailsService;
-        this.userBlackListRepository = userBlackListRepository;
-        this.passwordEncoder = passwordEncoder;
-    }
+    private final UserService userService;
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
@@ -45,6 +43,11 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
             if (userBlackListRepository.findByUsername(user.getUsername()).isPresent()) {
                 throw new LockedException("차단된 유저입니다.");
             }
+
+            // 탈퇴한 유저 로그인 방지
+            userService.authUserCheck(user.getUsername());
+
+
         } catch (AuthenticationException e) {
             log.error("인증실패 : " + e.getMessage());
             throw e;

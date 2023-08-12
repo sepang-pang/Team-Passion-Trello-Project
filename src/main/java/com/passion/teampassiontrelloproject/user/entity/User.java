@@ -1,19 +1,14 @@
 package com.passion.teampassiontrelloproject.user.entity;
 
-import com.passion.teampassiontrelloproject.board.entity.Board;
-import com.passion.teampassiontrelloproject.card.entity.Card;
-import com.passion.teampassiontrelloproject.column.entity.Columns;
-import com.passion.teampassiontrelloproject.common.blacklist.entity.UserBlackList;
 import com.passion.teampassiontrelloproject.common.entity.Timestamped;
-import com.passion.teampassiontrelloproject.user.change.password.PasswordManager;
-import com.passion.teampassiontrelloproject.userBoard.entity.UserBoard;
+import com.passion.teampassiontrelloproject.withdrawn.entity.WithdrawnUser;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.UUID;
 
 @Entity
 @Getter
@@ -44,23 +39,9 @@ public class User extends Timestamped {
     // soft-delete 상태값
     private boolean isDeleted = false;
 
-    @OneToMany(mappedBy = "user")
-    private List<Board> boards;
-
-    @OneToMany(mappedBy = "user")
-    private List<Columns> columns;
-
-    @OneToMany(mappedBy = "user")
-    private List<Card> cards;
-
-    @OneToOne(mappedBy = "user", cascade = CascadeType.REMOVE)
-    private UserBlackList uerBlackList;
-
-    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
-    private List<UserBoard> userBoards;
-
-    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
-    private List<PasswordManager> passwordManagers;
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "withdrawn_user_id")
+    private WithdrawnUser withdrawnUser;
 
     public User(String username, String password, String email, UserRoleEnum role) {
         this.username = username;
@@ -77,7 +58,30 @@ public class User extends Timestamped {
         this.password = newPassword;
     }
 
-    public void withdrawal() {
+
+    // ============= 회원 탈퇴 관련 메소드 ============= //
+    public void performWithdrawal() {
+        this.username = randomUsername();
+        this.password = randomPassword();
+        this.email = randomEmail();
         this.isDeleted = true;
+    }
+    private String randomUsername() {
+        return UUID.randomUUID().toString().substring(0, 11);
+    }
+
+    private String randomPassword() { return UUID.randomUUID().toString().substring(0, 17); }
+
+    private String randomEmail() {
+        return UUID.randomUUID().toString().substring(0, 11) + "@example.com";
+    }
+
+    public void updateWithdrawn(WithdrawnUser withdrawnUser) {
+        this.withdrawnUser = withdrawnUser;
+    }
+
+    private String encodePassword(String rawPassword) {
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+        return encoder.encode(rawPassword);
     }
 }

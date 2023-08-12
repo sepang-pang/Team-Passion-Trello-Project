@@ -20,6 +20,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -84,8 +87,14 @@ public class CardServiceImpl implements CardService {
         // 할당 할 카드 조회
         Card tagetCard = findCard(cardCollaboratorsRequestDto.getCardId());
 
+        // 본인이 생성한 카드가 아닌 경우, 다른 유저를 할당 할 수 없음
+        if (!tagetCard.getUser().getUsername().equals(user.getUsername())) {
+            throw new IllegalArgumentException("카드를 생성한 유저가 아닙니다.");
+        }
+
         // CardCollaborators 와 관계 매핑
         CardCollaborators cardCollaborators = new CardCollaborators(collaborator, tagetCard);
+
 
         // db 저장
         cardCollaboratorRepository.save(cardCollaborators);
@@ -102,6 +111,27 @@ public class CardServiceImpl implements CardService {
         return card.getCardCollaborators().stream()
                 .map(cardCollaborators -> new CardCollaboratorsResponseDto(cardCollaborators.getUser().getUsername()))
                 .toList();
+    }
+    @Override
+    public CardResponseDto updateDueDate(Long cardId, Long boardId, String dueDate, User user) throws DateTimeParseException {
+        // 보드 유저인지 확인
+        authority(user, boardId);
+
+        // 카드 조회
+        Card card = findCard(cardId);
+
+        // formatter 에 dueDate 형식을 지정
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+
+        // 입력받은 dueDate 를 formatter 형식으로 파싱
+        // 만약 dueDate 의 형식이 올바르지 않다면 Exception 발생
+        LocalDateTime localDateTime = LocalDateTime.parse(dueDate, formatter);
+
+        // 업데이트 메소드
+        card.updateDueDate(localDateTime);
+
+        return new CardResponseDto(card);
+
     }
   
     // ===================== 공통 메서드 ===================== //
@@ -120,7 +150,7 @@ public class CardServiceImpl implements CardService {
 
     // 유저 조회
     public User findUser(User user, String username, Long boardId) {
-        User user1 = userRepository.findByUsername(username).orElseThrow(()->
+        User user1 = userRepository.findByUsernameAndIsDeletedFalse(username).orElseThrow(()->
                 new IllegalArgumentException("존재하지 않는 유저입니다"));
 
         authority(user1, boardId);
@@ -128,7 +158,7 @@ public class CardServiceImpl implements CardService {
             throw new IllegalArgumentException("본인은 할당 할 수 없습니다");
         }
 
-        return userRepository.findByUsername(username).orElseThrow(() -> new IllegalArgumentException("할당되지 않은 카드입니다."));
+        return userRepository.findByUsernameAndIsDeletedFalse(username).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 유저입니다."));
     }
 
     // 할당 된 유저 검증

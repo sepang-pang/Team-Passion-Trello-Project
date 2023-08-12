@@ -1,5 +1,6 @@
 package com.passion.teampassiontrelloproject.card.controller;
 
+import com.google.protobuf.Api;
 import com.passion.teampassiontrelloproject.card.dto.CardRequestDto;
 import com.passion.teampassiontrelloproject.card.dto.CardResponseDto;
 import com.passion.teampassiontrelloproject.card.service.CardServiceImpl;
@@ -67,6 +68,12 @@ public class CardController {
     @GetMapping("/collaborator/{id}")
     public List<CardCollaboratorsResponseDto> getCollaborator(@PathVariable Long id) {
         return cardService.getCollaborator(id);
+    }
+
+    // 카드 마감일 수정
+    @PutMapping("/{cardId}/duedate" )
+    public CardResponseDto updateDueDate(@PathVariable Long cardId,  @RequestParam("boardId") Long boardId, @RequestParam("duedate") String dueDate, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return cardService.updateDueDate(cardId, boardId, dueDate, userDetails.getUser());
     }
 }
 

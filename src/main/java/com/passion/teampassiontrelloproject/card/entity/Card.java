@@ -12,6 +12,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,6 +34,9 @@ public class Card extends Timestamped {
     private String description;
 
     private String background_color;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    private LocalDateTime dueDate;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "columns_id")
@@ -64,4 +69,7 @@ public class Card extends Timestamped {
     }
 
 
+    public void updateDueDate(LocalDateTime localDateTime) {
+        this.dueDate = localDateTime;
+    }
 }

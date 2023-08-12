@@ -28,10 +28,18 @@ public class QCard extends EntityPathBase<Card> {
 
     public final NumberPath<Long> card_id = createNumber("card_id", Long.class);
 
+    public final ListPath<com.passion.teampassiontrelloproject.cardCollaborators.entity.CardCollaborators, com.passion.teampassiontrelloproject.cardCollaborators.entity.QCardCollaborators> CardCollaborators = this.<com.passion.teampassiontrelloproject.cardCollaborators.entity.CardCollaborators, com.passion.teampassiontrelloproject.cardCollaborators.entity.QCardCollaborators>createList("CardCollaborators", com.passion.teampassiontrelloproject.cardCollaborators.entity.CardCollaborators.class, com.passion.teampassiontrelloproject.cardCollaborators.entity.QCardCollaborators.class, PathInits.DIRECT2);
+
+    public final com.passion.teampassiontrelloproject.column.entity.QColumns columns;
+
+    public final ListPath<com.passion.teampassiontrelloproject.comment.entity.Comment, com.passion.teampassiontrelloproject.comment.entity.QComment> CommentList = this.<com.passion.teampassiontrelloproject.comment.entity.Comment, com.passion.teampassiontrelloproject.comment.entity.QComment>createList("CommentList", com.passion.teampassiontrelloproject.comment.entity.Comment.class, com.passion.teampassiontrelloproject.comment.entity.QComment.class, PathInits.DIRECT2);
+
     //inherited
     public final DateTimePath<java.time.LocalDateTime> createdAt = _super.createdAt;
 
     public final StringPath description = createString("description");
+
+    public final DateTimePath<java.time.LocalDateTime> dueDate = createDateTime("dueDate", java.time.LocalDateTime.class);
 
     //inherited
     public final DateTimePath<java.time.LocalDateTime> modifiedAt = _super.modifiedAt;
@@ -60,7 +68,8 @@ public class QCard extends EntityPathBase<Card> {
 
     public QCard(Class<? extends Card> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.user = inits.isInitialized("user") ? new com.passion.teampassiontrelloproject.user.entity.QUser(forProperty("user")) : null;
+        this.columns = inits.isInitialized("columns") ? new com.passion.teampassiontrelloproject.column.entity.QColumns(forProperty("columns"), inits.get("columns")) : null;
+        this.user = inits.isInitialized("user") ? new com.passion.teampassiontrelloproject.user.entity.QUser(forProperty("user"), inits.get("user")) : null;
     }
 
 }

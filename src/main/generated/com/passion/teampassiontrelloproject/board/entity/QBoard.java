@@ -26,6 +26,8 @@ public class QBoard extends EntityPathBase<Board> {
 
     public final StringPath backgroundColor = createString("backgroundColor");
 
+    public final ListPath<com.passion.teampassiontrelloproject.column.entity.Columns, com.passion.teampassiontrelloproject.column.entity.QColumns> ColumnsList = this.<com.passion.teampassiontrelloproject.column.entity.Columns, com.passion.teampassiontrelloproject.column.entity.QColumns>createList("ColumnsList", com.passion.teampassiontrelloproject.column.entity.Columns.class, com.passion.teampassiontrelloproject.column.entity.QColumns.class, PathInits.DIRECT2);
+
     //inherited
     public final DateTimePath<java.time.LocalDateTime> createdAt = _super.createdAt;
 
@@ -62,7 +64,7 @@ public class QBoard extends EntityPathBase<Board> {
 
     public QBoard(Class<? extends Board> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.user = inits.isInitialized("user") ? new com.passion.teampassiontrelloproject.user.entity.QUser(forProperty("user"), inits.get("user")) : null;
+        this.user = inits.isInitialized("user") ? new com.passion.teampassiontrelloproject.user.entity.QUser(forProperty("user")) : null;
     }
 
 }
