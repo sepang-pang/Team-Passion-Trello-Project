@@ -11,7 +11,6 @@ import com.passion.teampassiontrelloproject.user.dto.SignupRequestDto;
 import com.passion.teampassiontrelloproject.user.entity.User;
 import com.passion.teampassiontrelloproject.user.entity.UserRoleEnum;
 import com.passion.teampassiontrelloproject.user.repository.UserRepository;
-import com.passion.teampassiontrelloproject.user.repository.UserRepositoryCustom;
 import com.passion.teampassiontrelloproject.withdrawn.service.WithdrawnUserService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +21,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -173,9 +171,9 @@ public class UserServiceImpl implements UserService{
 
     }
 
-    // findUSer 메서드
-    public User findByUsername (String username) {
-        return userRepository.findByUsernameAndIsDeletedTrue(username)
-                .orElseThrow(()-> new IllegalArgumentException("탈퇴한 유저가 아닙니다."));
+    // 유저 체크 메서드
+    public void authUserCheck (String username) {
+        userRepository.findByUsernameAndIsDeletedFalse(username)
+                .orElseThrow(() -> new IllegalArgumentException("탈퇴한 유저입니다."));
     }
 }
