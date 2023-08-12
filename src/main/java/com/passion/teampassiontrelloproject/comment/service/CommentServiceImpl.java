@@ -17,6 +17,14 @@ public class CommentServiceImpl implements CommentService {
     private final CommentRepository commentRepository;
     private final CardServiceImpl cardService;
 
+    @Transactional
+    @Override
+    public CommentResponseDto getCommentById(Long id) {
+        Comment comment = findComment(id);
+        return new CommentResponseDto(comment);
+    }
+
+    @Transactional
     @Override
     public CommentResponseDto createComment(CommentRequestDto requestDto, User user) {
         Card card = cardService.findCard(requestDto.getCardId());
@@ -31,13 +39,14 @@ public class CommentServiceImpl implements CommentService {
         return new CommentResponseDto(savedComment);
     }
 
+    @Transactional
     @Override
     public void deleteComment(Comment comment, User user) {
         commentRepository.delete(comment);
     }
 
-    @Override
     @Transactional
+    @Override
     public CommentResponseDto updateComment(Comment comment, CommentRequestDto requestDto, User user) {
 
         comment.setUsername(requestDto.getUsername());
@@ -46,6 +55,7 @@ public class CommentServiceImpl implements CommentService {
         return new CommentResponseDto(comment);
     }
 
+    @Transactional
     @Override
     public Comment findComment(long id) {
         return commentRepository.findById(id).orElseThrow(() ->

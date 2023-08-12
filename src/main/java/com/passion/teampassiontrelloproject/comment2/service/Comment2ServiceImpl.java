@@ -2,6 +2,7 @@ package com.passion.teampassiontrelloproject.comment2.service;
 
 import com.passion.teampassiontrelloproject.card.entity.Card;
 import com.passion.teampassiontrelloproject.card.service.CardServiceImpl;
+import com.passion.teampassiontrelloproject.comment.dto.CommentResponseDto;
 import com.passion.teampassiontrelloproject.comment.entity.Comment;
 import com.passion.teampassiontrelloproject.comment.service.CommentServiceImpl;
 import com.passion.teampassiontrelloproject.comment2.dto.Comment2RequestDto;
@@ -18,6 +19,13 @@ import org.springframework.transaction.annotation.Transactional;
 public class Comment2ServiceImpl implements Comment2Service {
     private final Comment2Repository commentRepository;
     private final CommentServiceImpl commentService;
+
+    @Transactional
+    @Override
+    public Comment2ResponseDto getComment2ById(Long id) {
+        Comment2 comment = findComment(id);
+        return new Comment2ResponseDto(comment);
+    }
 
     @Override
     public Comment2ResponseDto createComment(Comment2RequestDto requestDto, User user) {
