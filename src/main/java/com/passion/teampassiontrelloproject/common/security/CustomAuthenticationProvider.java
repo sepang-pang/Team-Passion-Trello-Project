@@ -45,9 +45,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
             }
 
             // 탈퇴한 유저 로그인 방지
-            if (userService.findByUsername(user.getUsername()).isDeleted()) {
-                throw new IllegalArgumentException("탈퇴한 회원입니다.");
-            }
+            userService.authUserCheck(user.getUsername());
 
 
         } catch (AuthenticationException e) {

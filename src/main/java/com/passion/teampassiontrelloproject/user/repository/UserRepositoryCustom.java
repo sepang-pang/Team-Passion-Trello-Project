@@ -8,7 +8,6 @@ import java.util.Optional;
 public interface UserRepositoryCustom {
 
     public Optional<User> findByUsernameAndIsDeletedFalse(String username);
-    public Optional<User> findByUsernameAndIsDeletedTrue(String username);
     public Optional<User> findByUserIdAndIsDeletedFalse(Long id);
 
 }
