@@ -70,7 +70,11 @@ public class CardController {
         return cardService.getCollaborator(id);
     }
 
-    // 작업자 변경
+    // 카드 마감일 수정
+    @PutMapping("/{cardId}/duedate" )
+    public CardResponseDto updateDueDate(@PathVariable Long cardId,  @RequestParam("boardId") Long boardId, @RequestParam("duedate") String dueDate, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return cardService.updateDueDate(cardId, boardId, dueDate, userDetails.getUser());
+    }
 }
 
 

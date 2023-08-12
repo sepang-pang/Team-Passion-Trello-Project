@@ -9,4 +9,6 @@ public interface CardService {
     CardResponseDto createdCard(CardRequestDto cardRequestDto, Long boardId, Long columnId, User user);
     CardResponseDto updateCard(CardRequestDto cardRequestDto, User user, Long boardId, Long cardId);
     void deleteCard(User user, Long boardId, Long cardId);
+
+    CardResponseDto updateDueDate (Long cardId, Long boardId, String dueDate, User user);
 }

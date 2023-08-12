@@ -20,6 +20,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -108,6 +111,27 @@ public class CardServiceImpl implements CardService {
         return card.getCardCollaborators().stream()
                 .map(cardCollaborators -> new CardCollaboratorsResponseDto(cardCollaborators.getUser().getUsername()))
                 .toList();
+    }
+    @Override
+    public CardResponseDto updateDueDate(Long cardId, Long boardId, String dueDate, User user) throws DateTimeParseException {
+        // 보드 유저인지 확인
+        authority(user, boardId);
+
+        // 카드 조회
+        Card card = findCard(cardId);
+
+        // formatter 에 dueDate 형식을 지정
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+
+        // 입력받은 dueDate 를 formatter 형식으로 파싱
+        // 만약 dueDate 의 형식이 올바르지 않다면 Exception 발생
+        LocalDateTime localDateTime = LocalDateTime.parse(dueDate, formatter);
+
+        // 업데이트 메소드
+        card.updateDueDate(localDateTime);
+
+        return new CardResponseDto(card);
+
     }
   
     // ===================== 공통 메서드 ===================== //

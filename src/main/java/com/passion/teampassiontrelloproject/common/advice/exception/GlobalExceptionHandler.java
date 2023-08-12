@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.io.IOException;
+import java.time.format.DateTimeParseException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -16,6 +17,17 @@ public class GlobalExceptionHandler {
     @ExceptionHandler({IllegalArgumentException.class})
     public ResponseEntity<RestApiException> illegalArgumentExceptionHandler(IllegalArgumentException ex) {
         RestApiException restApiException = new RestApiException(ex.getMessage(), HttpStatus.BAD_REQUEST.value());
+        return new ResponseEntity<>(
+                // HTTP body
+                restApiException,
+                // HTTP status code
+                HttpStatus.BAD_REQUEST
+        );
+    }
+
+    @ExceptionHandler({DateTimeParseException.class})
+    public ResponseEntity<RestApiException> dateTimeParseExceptionHandler(DateTimeParseException ex) {
+        RestApiException restApiException = new RestApiException("형식이 올바르지 않습니다.", HttpStatus.BAD_REQUEST.value());
         return new ResponseEntity<>(
                 // HTTP body
                 restApiException,
