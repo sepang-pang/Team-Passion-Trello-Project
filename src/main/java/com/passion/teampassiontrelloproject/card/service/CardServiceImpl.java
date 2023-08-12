@@ -36,7 +36,6 @@ public class CardServiceImpl implements CardService {
     private final ColumnsRepository columnsRepository;
 
     @Transactional
-    @Override
     public CardResponseDto getCardById(Long id) {
         Card card = findCard(id);
         return new CardResponseDto(card);
@@ -45,7 +44,7 @@ public class CardServiceImpl implements CardService {
     @Transactional
     @Override
     public CardResponseDto createdCard(CardRequestDto cardRequestDto, Long boardId, Long columnId, User user) {
-        authority(user, boardId);
+//        authority(user, boardId);
         Columns columns = columnsRepository.findById(columnId)
                 .orElseThrow(()-> new IllegalArgumentException("존재하지 않는 컬럼입니다."));
         Card card = new Card(cardRequestDto, user, columns);
@@ -59,8 +58,8 @@ public class CardServiceImpl implements CardService {
 
     @Transactional
     @Override
-    public CardResponseDto updateCard(CardRequestDto cardRequestDto, User user, Long boardId, Long cardId) {
-        authority(user, boardId);
+    public CardResponseDto updateCard(CardRequestDto cardRequestDto, Long boardId, User user, Long cardId) {
+//        authority(user, boardId);
         Card card = findCard(cardId);
         checkCollaborators(card, user);
         card.update(cardRequestDto);
@@ -70,7 +69,7 @@ public class CardServiceImpl implements CardService {
     @Transactional
     @Override
     public void deleteCard(User user, Long boardId, Long cardId) {
-        authority(user, boardId);
+//        authority(user, boardId);
         Card card = findCard(cardId);
         checkCollaborators(card, user);
         cardRepository.delete(card);
@@ -79,8 +78,8 @@ public class CardServiceImpl implements CardService {
 
     // 카드에 유저 할당
     @Transactional
-    public ResponseEntity<ApiResponseDto> collaborator(CardCollaboratorsRequestDto cardCollaboratorsRequestDto, User user, Long boardId) {
-        authority(user, boardId);
+    public ResponseEntity<ApiResponseDto> collaborator(CardCollaboratorsRequestDto cardCollaboratorsRequestDto, Long boardId, User user) {
+//        authority(user, boardId);
         // 할당 할 유저 조회
         User collaborator = findUser(user, cardCollaboratorsRequestDto.getUsername(), boardId);
 
@@ -115,7 +114,7 @@ public class CardServiceImpl implements CardService {
     @Override
     public CardResponseDto updateDueDate(Long cardId, Long boardId, String dueDate, User user) throws DateTimeParseException {
         // 보드 유저인지 확인
-        authority(user, boardId);
+//        authority(user, boardId);
 
         // 카드 조회
         Card card = findCard(cardId);
@@ -143,17 +142,17 @@ public class CardServiceImpl implements CardService {
     }
 
     // 보드에 속한 유저가 아니라면 카드에 대한 권한을 가질 수 없음
-    public void authority(User user, Long boardId) {
-        userBoardRepository.findByUserIdAndBoardId(user.getId(), boardId).orElseThrow(() ->
-                new IllegalArgumentException("보드에 속한 유저가 아닙니다."));
-    }
+//    public void authority(User user, Long boardId) {
+//        userBoardRepository.findByUserIdAndBoardId(user.getId(), boardId).orElseThrow(() ->
+//                new IllegalArgumentException("보드에 속한 유저가 아닙니다."));
+//    }
 
     // 유저 조회
     public User findUser(User user, String username, Long boardId) {
         User user1 = userRepository.findByUsernameAndIsDeletedFalse(username).orElseThrow(()->
                 new IllegalArgumentException("존재하지 않는 유저입니다"));
 
-        authority(user1, boardId);
+//        authority(user1, boardId);
         if (user.getUsername().equals(username)) {
             throw new IllegalArgumentException("본인은 할당 할 수 없습니다");
         }
