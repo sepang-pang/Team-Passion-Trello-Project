@@ -77,7 +77,7 @@ public class BoardServiceImpl implements BoardService{
         Board board = findBoard(id);
 
         // 초대된 유저인지 체크
-        checkInvitedUser(board, user);
+//        checkInvitedUser(board, user);
 
         // 수정
         board.update(boardRequestDto);
@@ -97,7 +97,7 @@ public class BoardServiceImpl implements BoardService{
         Board board = findBoard(id);
 
         // 초대된 유저인지 체크
-        checkInvitedUser(board, user);
+//        checkInvitedUser(board, user);
 
         // 삭제
         boardRepository.delete(board);
@@ -149,6 +149,7 @@ public class BoardServiceImpl implements BoardService{
                 .toList();
     }
 
+    // 초대된 유저 제외
     @Override
     @Transactional
     public ResponseEntity<ApiResponseDto> exceptUserBoard(Long BoardId, Long UserId, User user){
@@ -178,7 +179,6 @@ public class BoardServiceImpl implements BoardService{
     }
 
     // 유저 조회
-    @Override
     public User findUser(User user, String username) {
         if (user.getUsername().equals(username)) {
             throw new IllegalArgumentException("본인은 초대할 수 없습니다");
@@ -187,25 +187,25 @@ public class BoardServiceImpl implements BoardService{
     }
 
     // 초대 유저 검증
-    @Override
-    public void checkInvitedUser(Board board, User user) {
-
-        // 조회한 보드에서 유저보드 리스트 가져오기
-        List<UserBoard> userBoards = board.getUserBoards();
-
-        // 유저 네임 리스트 생성
-        List<String> usernames = new ArrayList<>();
-
-        // 유저보드에서 유저이름을 추출하고, 유저네임 리스트에 저장
-        for (UserBoard userBoard : userBoards) {
-            usernames.add(userBoard.getUser().getUsername());
-        }
-
-        // 현재 인가된 사용자의 이름과 비교
-        if (!usernames.contains(user.getUsername())) {
-            throw new IllegalArgumentException("초대된 유저가 아닙니다.");
-        }
-    }
+//    @Override
+//    public void checkInvitedUser(Board board, User user) {
+//
+//        // 조회한 보드에서 유저보드 리스트 가져오기
+//        List<UserBoard> userBoards = board.getUserBoards();
+//
+//        // 유저 네임 리스트 생성
+//        List<String> usernames = new ArrayList<>();
+//
+//        // 유저보드에서 유저이름을 추출하고, 유저네임 리스트에 저장
+//        for (UserBoard userBoard : userBoards) {
+//            usernames.add(userBoard.getUser().getUsername());
+//        }
+//
+//        // 현재 인가된 사용자의 이름과 비교
+//        if (!usernames.contains(user.getUsername())) {
+//            throw new IllegalArgumentException("초대된 유저가 아닙니다.");
+//        }
+//    }
 
 
 }

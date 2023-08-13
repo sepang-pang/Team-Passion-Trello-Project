@@ -23,6 +23,5 @@ public interface BoardService {
     List<UserBoardResponseDto> getInviteUser(Long id);
     ResponseEntity<ApiResponseDto> exceptUserBoard(Long BoardId, Long UserId, User user);
     Board findBoard(Long id);
-    User findUser(User user, String username);
-    void checkInvitedUser(Board board, User user);
+
 }

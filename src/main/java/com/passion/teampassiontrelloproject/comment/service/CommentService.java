@@ -19,6 +19,6 @@ public interface CommentService {
     Comment findComment(long id);
 
     @Transactional
-    CommentResponseDto updateComment(Comment comment, CommentRequestDto requestDto, User user);
+    CommentResponseDto updateComment(CommentRequestDto requestDto,Comment comment,  User user);
 
 }
