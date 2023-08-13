@@ -65,6 +65,10 @@ public class BoardInviteAop {
     @Pointcut("execution(* com.passion.teampassiontrelloproject.comment.service.CommentService.deleteComment(..))")
     private void deleteComment() {}
 
+    // getCommentById
+    @Pointcut("execution(* com.passion.teampassiontrelloproject.comment.service.CommentService.getCommentById(..))")
+    private void getCommentById() {}
+
     // createComment2
     @Pointcut("execution(* com.passion.teampassiontrelloproject.comment2.service.Comment2Service.createComment(..))")
     private void createComment2() {}
@@ -142,6 +146,15 @@ public class BoardInviteAop {
 
         // user
         userCheck(commentBoard(comment.getCard().getCard_id()));
+        return joinPoint.proceed();
+    }
+
+    // deleteComment board 초대 여부 확인
+    @Around("getCommentById()")
+    public Object executeAuthorityCommentGet(ProceedingJoinPoint joinPoint) throws Throwable{
+        Long commentId = (Long)joinPoint.getArgs()[0];
+
+        userCheck(commentBoard2(commentId));
         return joinPoint.proceed();
     }
 

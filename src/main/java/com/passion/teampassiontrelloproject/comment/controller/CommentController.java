@@ -45,7 +45,7 @@ public class CommentController {
             throw new IllegalArgumentException("작성자만 수정 할 수 있습니다.");
         }
 
-        CommentResponseDto result = commentService.updateComment(comment, requestDto, userDetails.getUser());
+        CommentResponseDto result = commentService.updateComment(requestDto, comment, userDetails.getUser());
         return ResponseEntity.ok().body(result);
     }
 
