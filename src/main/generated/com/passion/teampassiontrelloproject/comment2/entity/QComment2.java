@@ -59,7 +59,7 @@ public class QComment2 extends EntityPathBase<Comment2> {
     public QComment2(Class<? extends Comment2> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
         this.comment = inits.isInitialized("comment") ? new com.passion.teampassiontrelloproject.comment.entity.QComment(forProperty("comment"), inits.get("comment")) : null;
-        this.user = inits.isInitialized("user") ? new com.passion.teampassiontrelloproject.user.entity.QUser(forProperty("user")) : null;
+        this.user = inits.isInitialized("user") ? new com.passion.teampassiontrelloproject.user.entity.QUser(forProperty("user"), inits.get("user")) : null;
     }
 
 }

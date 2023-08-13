@@ -129,6 +129,7 @@ public class BoardInviteAop {
         return joinPoint.proceed();
     }
 
+
     // createComment, updateComment  board 초대 여부 확인
     @Around("createComment() || updateComment()")
     public Object executeAuthorityComment(ProceedingJoinPoint joinPoint) throws Throwable{
@@ -188,9 +189,8 @@ public class BoardInviteAop {
         return joinPoint.proceed();
     }
 
-    // ==========================================
-
     // userDetails.getUser와 boardId를 통해 userBoard에서 확인
+
     public void userCheck(Long id){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if(auth != null && auth.getPrincipal().getClass() == UserDetailsImpl.class){

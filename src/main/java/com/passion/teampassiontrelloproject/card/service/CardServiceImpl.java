@@ -11,6 +11,7 @@ import com.passion.teampassiontrelloproject.cardCollaborators.repository.CardCol
 import com.passion.teampassiontrelloproject.column.entity.Columns;
 import com.passion.teampassiontrelloproject.column.repository.ColumnsRepository;
 import com.passion.teampassiontrelloproject.common.dto.ApiResponseDto;
+import com.passion.teampassiontrelloproject.common.slacknotify.SlackService;
 import com.passion.teampassiontrelloproject.user.entity.User;
 import com.passion.teampassiontrelloproject.user.repository.UserRepository;
 import com.passion.teampassiontrelloproject.userBoard.repository.UserBoardRepository;
@@ -34,6 +35,7 @@ public class CardServiceImpl implements CardService {
     private final UserBoardRepository userBoardRepository;
     private final CardCollaboratorRepository cardCollaboratorRepository;
     private final ColumnsRepository columnsRepository;
+    private final SlackService slackService;
 
     @Transactional
     public CardResponseDto getCardById(Long id) {
@@ -53,16 +55,25 @@ public class CardServiceImpl implements CardService {
 
         checkCollaborators(card, user);
         cardRepository.save(card);
+
+        // 슬랙 메시지 전송
+        String message = "새로운 카드가 생성되었습니다: " + card.getTitle();
+        slackService.sendSlackNotification(message);
+
         return new CardResponseDto(card);
     }
 
     @Transactional
     @Override
     public CardResponseDto updateCard(CardRequestDto cardRequestDto, Long boardId, User user, Long cardId) {
-//        authority(user, boardId);
         Card card = findCard(cardId);
         checkCollaborators(card, user);
         card.update(cardRequestDto);
+
+        // 슬랙 메시지 전송
+        String message = "카드가 수정되었습니다: " + card.getTitle();
+        slackService.sendSlackNotification(message);
+
         return new CardResponseDto(card);
     }
 
@@ -73,6 +84,10 @@ public class CardServiceImpl implements CardService {
         Card card = findCard(cardId);
         checkCollaborators(card, user);
         cardRepository.delete(card);
+
+        // 슬랙 메시지 전송
+        String message = "카드가 삭제되었습니다: " + card.getTitle();
+        slackService.sendSlackNotification(message);
     }
 
 

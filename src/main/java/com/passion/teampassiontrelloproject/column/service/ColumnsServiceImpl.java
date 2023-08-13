@@ -6,6 +6,7 @@ import com.passion.teampassiontrelloproject.column.dto.ColumnsRequestDto;
 import com.passion.teampassiontrelloproject.column.dto.ColumnsResponseDto;
 import com.passion.teampassiontrelloproject.column.entity.Columns;
 import com.passion.teampassiontrelloproject.column.repository.ColumnsRepository;
+import com.passion.teampassiontrelloproject.common.slacknotify.SlackService;
 import com.passion.teampassiontrelloproject.user.entity.User;
 import com.passion.teampassiontrelloproject.userBoard.repository.UserBoardRepository;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +19,7 @@ public class ColumnsServiceImpl implements ColumnsService {
     private final BoardService boardService;
     private final ColumnsRepository columnsRepository;
     private final UserBoardRepository userBoardRepository;
+    private final SlackService slackService;
 
     @Transactional
     @Override
@@ -39,6 +41,10 @@ public class ColumnsServiceImpl implements ColumnsService {
 
         var savedColumns = columnsRepository.save(columns);
 
+        // 슬랙 메시지 전송
+        String message = "새로운 컬럼이 생성되었습니다: " + columns.getTitle();
+        slackService.sendSlackNotification(message);
+
         return new ColumnsResponseDto(savedColumns);
     }
 
@@ -54,6 +60,10 @@ public class ColumnsServiceImpl implements ColumnsService {
         columns.setTitle(requestDto.getTitle());
         columns.setName(requestDto.getName());
         columns.setDescription(requestDto.getDescription());
+
+        // 슬랙 메시지 전송
+        String message = "컬럼이 수정되었습니다: " + columns.getTitle();
+        slackService.sendSlackNotification(message);
 
         return new ColumnsResponseDto(columns);
     }
