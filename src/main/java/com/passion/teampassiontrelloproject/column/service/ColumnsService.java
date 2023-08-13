@@ -17,7 +17,7 @@ public interface ColumnsService {
     Columns findColumns(long id);
 
     @Transactional
-    ColumnsResponseDto updateColumns(Columns columns, ColumnsRequestDto requestDto, User user);
+    ColumnsResponseDto updateColumns(ColumnsRequestDto requestDto, Columns columns, User user);
 
 }
 

@@ -30,24 +30,24 @@ public class ColumnController {
     @PutMapping("/columns/{id}")
     public ResponseEntity<ApiResponseDto> updateColumns(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long id, @RequestBody ColumnsRequestDto requestDto) {
         Columns columns = columnsService.findColumns(id);
+        ColumnsResponseDto result = columnsService.updateColumns(requestDto,columns,  userDetails.getUser());
 
         if (!columns.getUser().getId().equals(userDetails.getUser().getId())) {
             throw new IllegalArgumentException("작성자만 수정 할 수 있습니다.");
         }
 
-        ColumnsResponseDto result = columnsService.updateColumns(columns, requestDto, userDetails.getUser());
         return ResponseEntity.ok().body(result);
     }
 
     @DeleteMapping("/columns/{id}")
     public ResponseEntity<ApiResponseDto> deleteColumns(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long id) {
         Columns columns = columnsService.findColumns(id);
+        columnsService.deleteColumns(columns, userDetails.getUser());
 
         if (!columns.getUser().getId().equals(userDetails.getUser().getId())) {
             throw new IllegalArgumentException("작성자만 삭제 할 수 있습니다.");
         }
 
-        columnsService.deleteColumns(columns, userDetails.getUser());
         return ResponseEntity.ok().body(new ApiResponseDto("컬럼 삭제 성공", HttpStatus.OK.value()));
     }
 }

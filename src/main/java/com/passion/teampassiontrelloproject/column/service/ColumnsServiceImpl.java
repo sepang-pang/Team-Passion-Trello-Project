@@ -39,7 +39,7 @@ public class ColumnsServiceImpl implements ColumnsService {
 
     @Override
     @Transactional
-    public ColumnsResponseDto updateColumns(Columns columns, ColumnsRequestDto requestDto, User user) {
+    public ColumnsResponseDto updateColumns(ColumnsRequestDto requestDto,Columns columns,  User user) {
 
         columns.setTitle(requestDto.getTitle());
         columns.setName(requestDto.getName());
