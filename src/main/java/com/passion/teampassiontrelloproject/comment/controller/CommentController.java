@@ -28,24 +28,22 @@ public class CommentController {
     @PutMapping("/comment/{id}")
     public ResponseEntity<ApiResponseDto> updateComment(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long id, @RequestBody CommentRequestDto requestDto) {
         Comment comment = commentService.findComment(id);
-
+        CommentResponseDto result = commentService.updateComment(requestDto, comment, userDetails.getUser());
         if (!comment.getUser().getId().equals(userDetails.getUser().getId())) {
             throw new IllegalArgumentException("작성자만 수정 할 수 있습니다.");
         }
 
-        CommentResponseDto result = commentService.updateComment(comment, requestDto, userDetails.getUser());
         return ResponseEntity.ok().body(result);
     }
 
     @DeleteMapping("/comment/{id}")
     public ResponseEntity<ApiResponseDto> deleteComment(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long id) {
         Comment comment = commentService.findComment(id);
-
+        commentService.deleteComment(comment, userDetails.getUser());
         if (!comment.getUser().getId().equals(userDetails.getUser().getId())) {
             throw new IllegalArgumentException("작성자만 삭제 할 수 있습니다.");
         }
 
-        commentService.deleteComment(comment, userDetails.getUser());
         return ResponseEntity.ok().body(new ApiResponseDto("댓글 삭제 성공", HttpStatus.OK.value()));
     }
 }

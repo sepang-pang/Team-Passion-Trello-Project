@@ -38,7 +38,7 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     @Transactional
-    public CommentResponseDto updateComment(Comment comment, CommentRequestDto requestDto, User user) {
+    public CommentResponseDto updateComment(CommentRequestDto requestDto, Comment comment, User user) {
 
         comment.setUsername(requestDto.getUsername());
         comment.setDescription(requestDto.getDescription());
