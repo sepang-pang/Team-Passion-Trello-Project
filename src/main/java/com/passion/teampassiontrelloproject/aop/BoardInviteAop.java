@@ -8,6 +8,9 @@ import com.passion.teampassiontrelloproject.column.entity.Columns;
 import com.passion.teampassiontrelloproject.column.repository.ColumnsRepository;
 import com.passion.teampassiontrelloproject.comment.dto.CommentRequestDto;
 import com.passion.teampassiontrelloproject.comment.entity.Comment;
+import com.passion.teampassiontrelloproject.comment.repository.CommentRepository;
+import com.passion.teampassiontrelloproject.comment2.dto.Comment2RequestDto;
+import com.passion.teampassiontrelloproject.comment2.entity.Comment2;
 import com.passion.teampassiontrelloproject.common.security.UserDetailsImpl;
 import com.passion.teampassiontrelloproject.user.entity.User;
 import com.passion.teampassiontrelloproject.userBoard.repository.UserBoardRepository;
@@ -32,6 +35,7 @@ public class BoardInviteAop {
     private final UserBoardRepository userBoardRepository;
     private final CardRepository cardRepository;
     private final ColumnsRepository columnsRepository;
+    private final CommentRepository commentRepository;
 
     // cardService 전체 메서드
     @Pointcut("execution(* com.passion.teampassiontrelloproject.card.service.CardService.*(..))")
@@ -60,6 +64,18 @@ public class BoardInviteAop {
     // deleteComment
     @Pointcut("execution(* com.passion.teampassiontrelloproject.comment.service.CommentService.deleteComment(..))")
     private void deleteComment() {}
+
+    // createComment2
+    @Pointcut("execution(* com.passion.teampassiontrelloproject.comment2.service.Comment2Service.createComment(..))")
+    private void createComment2() {}
+
+    // updateComment2
+    @Pointcut("execution(* com.passion.teampassiontrelloproject.comment2.service.Comment2Service.updateComment(..))")
+    private void updateComment2() {}
+
+    // deleteComment2
+    @Pointcut("execution(* com.passion.teampassiontrelloproject.comment2.service.Comment2Service.deleteComment(..))")
+    private void deleteComment2() {}
 
     // cardService board 초대 여부 확인
     @Around("cardService()")
@@ -93,28 +109,46 @@ public class BoardInviteAop {
         return joinPoint.proceed();
     }
 
-    // cardService board 초대 여부 확인
+    // createComment, updateComment  board 초대 여부 확인
     @Around("createComment() || updateComment()")
     public Object executeAuthorityComment(ProceedingJoinPoint joinPoint) throws Throwable{
         CommentRequestDto commentRequestDto = (CommentRequestDto)joinPoint.getArgs()[0];
-        Optional<Card> card = cardRepository.findById(commentRequestDto.getCardId());
-        Optional<Columns> columns = columnsRepository.findById(card.get().getColumns().getId());
 
         // user
-        userCheck(columns.get().getBoard().getId());
+        userCheck(commentBoard(commentRequestDto.getCardId()));
         return joinPoint.proceed();
     }
 
+    // deleteComment board 초대 여부 확인
     @Around("deleteComment()")
     public Object executeAuthorityCommentDelete(ProceedingJoinPoint joinPoint) throws Throwable{
         Comment comment = (Comment)joinPoint.getArgs()[0];
-        Optional<Card> card = cardRepository.findById(comment.getCard().getCard_id());
-        Optional<Columns> columns = columnsRepository.findById(card.get().getColumns().getId());
 
         // user
-        userCheck(columns.get().getBoard().getId());
+        userCheck(commentBoard(comment.getCard().getCard_id()));
         return joinPoint.proceed();
     }
+
+    // createComment2, updateComment2  board 초대 여부 확인
+    @Around("createComment2() || updateComment2()")
+    public Object executeAuthorityComment2(ProceedingJoinPoint joinPoint) throws Throwable{
+        Comment2RequestDto comment2RequestDto = (Comment2RequestDto)joinPoint.getArgs()[0];
+
+        // user
+        userCheck(commentBoard2(comment2RequestDto.getCommentId()));
+        return joinPoint.proceed();
+    }
+
+    // deleteComment2 board 초대 여부 확인
+    @Around("deleteComment2()")
+    public Object executeAuthorityCommentDelete2(ProceedingJoinPoint joinPoint) throws Throwable{
+        Comment2 comment2 = (Comment2)joinPoint.getArgs()[0];
+
+        // user
+        userCheck(commentBoard2(comment2.getComment().getId()));
+        return joinPoint.proceed();
+    }
+
 
     // userDetails.getUser와 boardId를 통해 userBoard에서 확인
     public void userCheck(Long id){
@@ -127,5 +161,21 @@ public class BoardInviteAop {
                     new IllegalArgumentException("보드에 속한 유저가 아닙니다."));
         }
     }
+
+    // comment 에서 boardId 찾기
+    public Long commentBoard(Long id){
+        Optional<Card> card = cardRepository.findById(id);
+        Optional<Columns> columns = columnsRepository.findById(card.get().getColumns().getId());
+        return columns.get().getBoard().getId();
+    }
+
+    // comment2 에서 boardId 찾기
+    public Long commentBoard2(Long id){
+        Optional<Comment> comment = commentRepository.findById(id);
+        Optional<Card> card = cardRepository.findById(comment.get().getCard().getCard_id());
+        Optional<Columns> columns = columnsRepository.findById(card.get().getColumns().getId());
+        return columns.get().getBoard().getId();
+    }
+
 
 }
