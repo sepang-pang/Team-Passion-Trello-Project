@@ -77,6 +77,22 @@ public class BoardInviteAop {
     @Pointcut("execution(* com.passion.teampassiontrelloproject.comment2.service.Comment2Service.deleteComment(..))")
     private void deleteComment2() {}
 
+    // updateBoard
+    @Pointcut("execution(* com.passion.teampassiontrelloproject.board.service.BoardService.updateBoard(..))")
+    private void updateBoard() {}
+
+    // deleteBoard
+    @Pointcut("execution(* com.passion.teampassiontrelloproject.board.service.BoardService.deleteBoard(..))")
+    private void deleteBoard() {}
+
+    // getInviteUser
+    @Pointcut("execution(* com.passion.teampassiontrelloproject.board.service.BoardService.getInviteUser(..))")
+    private void getInviteUser() {}
+
+    // exceptUserBoard
+    @Pointcut("execution(* com.passion.teampassiontrelloproject.board.service.BoardService.exceptUserBoard(..))")
+    private void exceptUserBoard() {}
+
     // cardService board 초대 여부 확인
     @Around("cardService()")
     public Object executeAuthorityCard(ProceedingJoinPoint joinPoint) throws Throwable{
@@ -149,6 +165,17 @@ public class BoardInviteAop {
         return joinPoint.proceed();
     }
 
+    // updateBoard, deleteBoard, getInviteUser, exceptUserBoard 초대 여부 확인
+    @Around("updateBoard() || deleteBoard() || getInviteUser() || exceptUserBoard() ")
+    public Object executeAuthorityBoard(ProceedingJoinPoint joinPoint) throws Throwable{
+        Long boardId  = (Long) joinPoint.getArgs()[0];
+
+        // user
+        userCheck(boardId);
+        return joinPoint.proceed();
+    }
+
+    // ==========================================
 
     // userDetails.getUser와 boardId를 통해 userBoard에서 확인
     public void userCheck(Long id){
