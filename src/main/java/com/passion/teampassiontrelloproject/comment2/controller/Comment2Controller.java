@@ -1,5 +1,6 @@
 package com.passion.teampassiontrelloproject.comment2.controller;
 
+import com.passion.teampassiontrelloproject.comment.dto.CommentResponseDto;
 import com.passion.teampassiontrelloproject.comment2.dto.Comment2RequestDto;
 import com.passion.teampassiontrelloproject.comment2.dto.Comment2ResponseDto;
 import com.passion.teampassiontrelloproject.comment2.entity.Comment2;
@@ -18,6 +19,17 @@ import org.springframework.web.bind.annotation.*;
 public class Comment2Controller {
 
     private final Comment2ServiceImpl commentService;
+
+    // 대댓글 선택조회
+    @GetMapping("/comment2/{comment2Id}")
+    public ResponseEntity<Comment2ResponseDto> getComment2ById(@PathVariable Long comment2Id) {
+        Comment2ResponseDto comment = commentService.getComment2ById(comment2Id);
+        if (comment != null) {
+            return new ResponseEntity<>(comment, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
 
     @PostMapping("/comment2")
     public ResponseEntity<Comment2ResponseDto> createComment(@AuthenticationPrincipal UserDetailsImpl userDetails, @RequestBody Comment2RequestDto requestDto) {

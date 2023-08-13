@@ -1,5 +1,6 @@
 package com.passion.teampassiontrelloproject.column.controller;
 
+import com.passion.teampassiontrelloproject.card.dto.CardResponseDto;
 import com.passion.teampassiontrelloproject.column.dto.ColumnsRequestDto;
 import com.passion.teampassiontrelloproject.column.dto.ColumnsResponseDto;
 import com.passion.teampassiontrelloproject.column.entity.Columns;
@@ -21,13 +22,24 @@ public class ColumnController {
 
     private final ColumnsServiceImpl columnsService;
 
+    // 컬럼 선택조회
+    @GetMapping("/columns/{columnsId}")
+    public ResponseEntity<ColumnsResponseDto> getColumnsById(@PathVariable Long columnsId) {
+        ColumnsResponseDto columns = columnsService.getColumnsById(columnsId);
+        if (columns != null) {
+            return new ResponseEntity<>(columns, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
     @PostMapping("/columns")
     public ResponseEntity<ColumnsResponseDto> createColumns(@AuthenticationPrincipal UserDetailsImpl userDetails, @RequestBody ColumnsRequestDto requestDto) {
-        ColumnsResponseDto result = columnsService.createColumns(requestDto, userDetails.getUser());
+        ColumnsResponseDto result = columnsService.createColumns(requestDto, requestDto.getBoardId(), userDetails.getUser());
         return ResponseEntity.status(HttpStatus.CREATED).body(result);
     }
 
-    @PutMapping("/columns/{id}")
+    @PutMapping("/columns/{columnsId}")
     public ResponseEntity<ApiResponseDto> updateColumns(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long id, @RequestBody ColumnsRequestDto requestDto) {
         Columns columns = columnsService.findColumns(id);
 
@@ -39,7 +51,7 @@ public class ColumnController {
         return ResponseEntity.ok().body(result);
     }
 
-    @DeleteMapping("/columns/{id}")
+    @DeleteMapping("/columns/{columnsId}")
     public ResponseEntity<ApiResponseDto> deleteColumns(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long id) {
         Columns columns = columnsService.findColumns(id);
 
