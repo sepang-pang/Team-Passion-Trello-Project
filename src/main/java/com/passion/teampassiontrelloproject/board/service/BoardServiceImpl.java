@@ -5,6 +5,7 @@ import com.passion.teampassiontrelloproject.board.dto.BoardResponseDto;
 import com.passion.teampassiontrelloproject.board.entity.Board;
 import com.passion.teampassiontrelloproject.board.repository.BoardRepository;
 import com.passion.teampassiontrelloproject.common.dto.ApiResponseDto;
+import com.passion.teampassiontrelloproject.common.slacknotify.SlackService;
 import com.passion.teampassiontrelloproject.user.entity.User;
 import com.passion.teampassiontrelloproject.user.repository.UserRepository;
 import com.passion.teampassiontrelloproject.userBoard.dto.UserBoardRequestDto;
@@ -28,6 +29,7 @@ public class BoardServiceImpl implements BoardService{
     private final BoardRepository boardRepository;
     private final UserBoardRepository userBoardRepository;
     private final UserRepository userRepository;
+    private final SlackService slackService;
 
     // 보드 생성
     @Override
@@ -38,6 +40,10 @@ public class BoardServiceImpl implements BoardService{
 
         // 유저 보드 관계 매핑
         new UserBoard(user, board);
+
+        // 슬랙 메시지 전송
+        String message = "새로운 보드가 생성되었습니다: " + board.getTitle();
+        slackService.sendSlackNotification(message);
 
         // db 저장
         boardRepository.save(board);
@@ -75,6 +81,11 @@ public class BoardServiceImpl implements BoardService{
 
         // 수정
         board.update(boardRequestDto);
+
+        // 슬랙 메시지 전송
+        String message = "보드가 수정되었습니다: " + board.getTitle();
+        slackService.sendSlackNotification(message);
+
         return new BoardResponseDto(board);
     }
 
@@ -90,6 +101,11 @@ public class BoardServiceImpl implements BoardService{
 
         // 삭제
         boardRepository.delete(board);
+
+        // 슬랙 메시지
+        String message = "보드가 삭제되었습니다: " + board.getTitle();
+        slackService.sendSlackNotification(message);
+
         return ResponseEntity.ok().body(new ApiResponseDto("보드 삭제 완료!", HttpStatus.OK.value()));
     }
 
@@ -111,6 +127,10 @@ public class BoardServiceImpl implements BoardService{
         if(!user.getId().equals(tagetBoard.getUser().getId())){
             throw new IllegalArgumentException("초대 권한이 없습니다.");
         }
+
+        // 슬랙 메시지
+        String message = targeUser.getUsername() + " 님이 초대되었습니다";
+        slackService.sendSlackNotification(message);
 
         // db 저장
         userBoardRepository.save(userBoard);
@@ -186,5 +206,6 @@ public class BoardServiceImpl implements BoardService{
             throw new IllegalArgumentException("초대된 유저가 아닙니다.");
         }
     }
+
 
 }

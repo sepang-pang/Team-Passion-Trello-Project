@@ -6,6 +6,7 @@ import com.passion.teampassiontrelloproject.comment.dto.CommentRequestDto;
 import com.passion.teampassiontrelloproject.comment.dto.CommentResponseDto;
 import com.passion.teampassiontrelloproject.comment.entity.Comment;
 import com.passion.teampassiontrelloproject.comment.repository.CommentRepository;
+import com.passion.teampassiontrelloproject.common.slacknotify.SlackService;
 import com.passion.teampassiontrelloproject.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class CommentServiceImpl implements CommentService {
     private final CommentRepository commentRepository;
     private final CardServiceImpl cardService;
+    private final SlackService slackService;
 
     @Transactional
     @Override
@@ -36,6 +38,10 @@ public class CommentServiceImpl implements CommentService {
 
         var savedComment = commentRepository.save(comment);
 
+        // 슬랙 메시지 전송
+        String message = "새로운 댓글이 작성되었습니다";
+        slackService.sendSlackNotification(message);
+
         return new CommentResponseDto(savedComment);
     }
 
@@ -43,6 +49,10 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public void deleteComment(Comment comment, User user) {
         commentRepository.delete(comment);
+
+        // 슬랙 메시지 전송
+        String message = "댓글이 삭제되었습니다";
+        slackService.sendSlackNotification(message);
     }
 
     @Transactional
@@ -51,6 +61,10 @@ public class CommentServiceImpl implements CommentService {
 
         comment.setUsername(requestDto.getUsername());
         comment.setDescription(requestDto.getDescription());
+
+        // 슬랙 메시지 전송
+        String message = "댓글이 수정되었습니다";
+        slackService.sendSlackNotification(message);
 
         return new CommentResponseDto(comment);
     }

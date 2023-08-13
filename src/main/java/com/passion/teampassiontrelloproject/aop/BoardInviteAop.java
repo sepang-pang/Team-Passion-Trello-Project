@@ -67,8 +67,6 @@ public class BoardInviteAop {
         return joinPoint.proceed();
     }
 
-
-
     public void userCheck(Long id){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if(auth != null && auth.getPrincipal().getClass() == UserDetailsImpl.class){

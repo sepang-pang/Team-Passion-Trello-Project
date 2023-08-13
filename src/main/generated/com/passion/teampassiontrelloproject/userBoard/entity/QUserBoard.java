@@ -47,7 +47,7 @@ public class QUserBoard extends EntityPathBase<UserBoard> {
     public QUserBoard(Class<? extends UserBoard> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
         this.board = inits.isInitialized("board") ? new com.passion.teampassiontrelloproject.board.entity.QBoard(forProperty("board"), inits.get("board")) : null;
-        this.user = inits.isInitialized("user") ? new com.passion.teampassiontrelloproject.user.entity.QUser(forProperty("user")) : null;
+        this.user = inits.isInitialized("user") ? new com.passion.teampassiontrelloproject.user.entity.QUser(forProperty("user"), inits.get("user")) : null;
     }
 
 }
