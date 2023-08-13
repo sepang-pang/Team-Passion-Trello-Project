@@ -43,7 +43,7 @@ public class CardController {
     // 카드 수정
     @PutMapping("/{cardId}")
     public ResponseEntity<CardResponseDto> updateCard(@PathVariable Long cardId, @RequestBody CardRequestDto cardRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        CardResponseDto updateCard = cardService.updateCard(cardRequestDto, userDetails.getUser(), cardRequestDto.getBoardId(), cardId);
+        CardResponseDto updateCard = cardService.updateCard(cardRequestDto, cardRequestDto.getBoardId(), userDetails.getUser(), cardId);
         if (updateCard != null) {
             return new ResponseEntity<>(updateCard, HttpStatus.OK);
         } else {
@@ -61,7 +61,7 @@ public class CardController {
     // 작업자 할당
     @PostMapping("/collaborator")
     public ResponseEntity<ApiResponseDto> collaborator(@RequestBody CardCollaboratorsRequestDto cardCollaboratorsRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return cardService.collaborator(cardCollaboratorsRequestDto, userDetails.getUser(), cardCollaboratorsRequestDto.getBoardId());
+        return cardService.collaborator(cardCollaboratorsRequestDto, cardCollaboratorsRequestDto.getBoardId(), userDetails.getUser());
     }
 
     // 할당 된 유저 조회
