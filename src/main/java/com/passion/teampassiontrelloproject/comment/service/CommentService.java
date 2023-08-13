@@ -9,6 +9,9 @@ import org.springframework.transaction.annotation.Transactional;
 public interface CommentService {
 
 
+    @Transactional
+    CommentResponseDto getCommentById(Long id);
+
     CommentResponseDto createComment(CommentRequestDto requestDto, User user);
 
     void deleteComment(Comment comment, User user);
