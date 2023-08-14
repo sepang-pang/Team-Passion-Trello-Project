@@ -1,7 +1,9 @@
 package com.passion.teampassiontrelloproject.card.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.passion.teampassiontrelloproject.card.entity.Card;
 import lombok.Getter;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
 
@@ -16,6 +18,10 @@ public class CardResponseDto {
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
 
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
+    private LocalDateTime dueDate;
+
+
     public CardResponseDto(Card card) {
         this.card_id = getCard_id();
         this.title = card.getTitle();
@@ -24,5 +30,6 @@ public class CardResponseDto {
         this.background_color = card.getBackground_color();
         this.createdAt = card.getCreatedAt();
         this.modifiedAt = card.getModifiedAt();
+        this.dueDate = card.getDueDate();
     }
 }

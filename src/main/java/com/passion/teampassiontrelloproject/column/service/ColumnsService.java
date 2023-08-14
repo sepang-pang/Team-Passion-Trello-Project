@@ -10,14 +10,17 @@ import org.springframework.transaction.annotation.Transactional;
 public interface ColumnsService {
 
 
-    ColumnsResponseDto createColumns(ColumnsRequestDto requestDto, User user);
+    @Transactional
+    ColumnsResponseDto getColumnsById(Long id);
+
+    ColumnsResponseDto createColumns(ColumnsRequestDto requestDto, Long boardId, User user);
 
     void deleteColumns(Columns columns, User user);
 
     Columns findColumns(long id);
 
     @Transactional
-    ColumnsResponseDto updateColumns(Columns columns, ColumnsRequestDto requestDto, User user);
+    ColumnsResponseDto updateColumns(ColumnsRequestDto requestDto, Columns columns, User user);
 
 }
 

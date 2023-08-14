@@ -1,11 +1,15 @@
 package com.passion.teampassiontrelloproject.column.entity;
 
 import com.passion.teampassiontrelloproject.board.entity.Board;
+import com.passion.teampassiontrelloproject.card.entity.Card;
 import com.passion.teampassiontrelloproject.common.entity.Timestamped;
 import com.passion.teampassiontrelloproject.user.entity.User;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -33,6 +37,13 @@ public class Columns extends Timestamped {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
+
+    @OneToMany(mappedBy = "columns", cascade = CascadeType.PERSIST, orphanRemoval = true)
+    private List<Card> cardList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "columns", cascade = CascadeType.REMOVE)
+    private List<Card> CardList = new ArrayList<>();
+
 
     public Columns(String title){
         this.title = title;

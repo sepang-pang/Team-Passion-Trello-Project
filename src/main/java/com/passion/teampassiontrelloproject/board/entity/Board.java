@@ -1,6 +1,7 @@
 package com.passion.teampassiontrelloproject.board.entity;
 
 import com.passion.teampassiontrelloproject.board.dto.BoardRequestDto;
+import com.passion.teampassiontrelloproject.column.entity.Columns;
 import com.passion.teampassiontrelloproject.common.entity.Timestamped;
 import com.passion.teampassiontrelloproject.user.entity.User;
 import com.passion.teampassiontrelloproject.userBoard.entity.UserBoard;
@@ -38,7 +39,10 @@ public class Board extends Timestamped {
     private User user;
 
     @OneToMany(mappedBy = "board", cascade = CascadeType.PERSIST, orphanRemoval = true)
-    private List<UserBoard> UserBoards = new ArrayList<>();
+    private List<UserBoard> userBoards = new ArrayList<>();
+
+    @OneToMany(mappedBy = "board", cascade = CascadeType.REMOVE)
+    private List<Columns> ColumnsList = new ArrayList<>();
 
     public Board(BoardRequestDto requestDto, User user) {
         this.name = user.getUsername();

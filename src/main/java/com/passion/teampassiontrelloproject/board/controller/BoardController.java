@@ -10,7 +10,6 @@ import com.passion.teampassiontrelloproject.userBoard.dto.UserBoardResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -25,6 +24,16 @@ public class BoardController {
     @PostMapping("/board") // 보드 작성
     public BoardResponseDto createBoard(@RequestBody BoardRequestDto boardRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return boardService.createBoard(boardRequestDto, userDetails.getUser());
+    }
+
+    @GetMapping("/board") // 보드 조회
+    public List<BoardResponseDto> getBoard(@AuthenticationPrincipal UserDetailsImpl userDetails){
+        return boardService.getBoard(userDetails.getUser());
+    }
+
+    @GetMapping("/board/{id}") // 특정 보드 조회
+    public ResponseEntity<ApiResponseDto> getIdBoard(@PathVariable Long id, @AuthenticationPrincipal UserDetailsImpl userDetails){
+        return boardService.getIdBoard(id,userDetails.getUser());
     }
 
     @PutMapping("/board/{id}") // 보드 수정
@@ -45,5 +54,10 @@ public class BoardController {
     @GetMapping("/board/invite/{id}") // 보드에 초대된 유저 조회
     public List<UserBoardResponseDto> getInviteUser(@PathVariable Long id) {
         return boardService.getInviteUser(id);
+    }
+
+    @DeleteMapping("/board/{BoardId}/except/{UserId}")
+    public ResponseEntity<ApiResponseDto> exceptUserBoard(@PathVariable Long BoardId, @PathVariable Long UserId, @AuthenticationPrincipal UserDetailsImpl userDetails){
+        return boardService.exceptUserBoard(BoardId,UserId,userDetails.getUser());
     }
 }
