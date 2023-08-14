@@ -1,6 +1,6 @@
 package com.passion.teampassiontrelloproject.user.service;
 
-import com.passion.teampassiontrelloproject.common.advice.custom.DuplicateException;
+import com.passion.teampassiontrelloproject.common.advice.custom.*;
 import com.passion.teampassiontrelloproject.common.dto.ApiResponseDto;
 import com.passion.teampassiontrelloproject.common.jwt.JwtUtil;
 import com.passion.teampassiontrelloproject.user.change.password.PasswordManager;
@@ -15,6 +15,7 @@ import com.passion.teampassiontrelloproject.withdrawn.service.WithdrawnUserServi
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -36,7 +37,8 @@ public class UserServiceImpl implements UserService{
     private final JwtUtil jwtUtil;
 
     // ADMIN_TOKEN
-    private final String ADMIN_TOKEN = "AAABnvxRVklrnYxKZ0aHgTBcXukeZygoC";
+    @Value("${ADMIN_TOKEN}")
+    private String adminToken;
 
     // 회원가입
     @Override
@@ -63,8 +65,8 @@ public class UserServiceImpl implements UserService{
         // 사용자 ROLE 확인
         UserRoleEnum role = UserRoleEnum.USER;
         if (requestDto.isAdmin()) {
-            if (!ADMIN_TOKEN.equals(requestDto.getAdminToken())) {
-                throw new IllegalArgumentException("ADMIN TOKEN 값이 올바르지 않습니다.");
+            if (!adminToken.equals(requestDto.getAdminToken())) {
+                throw new InvalidAdminTokenException("ADMIN TOKEN 값이 올바르지 않습니다.");
             }
             role = UserRoleEnum.ADMIN;
         }
@@ -85,7 +87,6 @@ public class UserServiceImpl implements UserService{
     }
 
 
-
     // 회원탈퇴
     @Override
     @Transactional
@@ -93,12 +94,12 @@ public class UserServiceImpl implements UserService{
 
         // 비밀번호 확인, 첫 번째 입력
         if (!passwordEncoder.matches(checkPasswordDto.getFirstPassword(), user.getPassword())) {
-            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
+            throw new PasswordMismatchException("비밀번호가 일치하지 않습니다.");
         }
 
         // 비밀번호 확인, 두 번째 입력
         if (!passwordEncoder.matches(checkPasswordDto.getSecondPassword(), user.getPassword())) {
-            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
+            throw new PasswordMismatchException("비밀번호가 일치하지 않습니다.");
         }
 
         // 유저의 정보를 백업
@@ -130,13 +131,13 @@ public class UserServiceImpl implements UserService{
         // 현재 비밀번호 확인
         log.info("현재 비밀번호 확인");
         if (!passwordEncoder.matches(changePasswordDto.getCurrentPassword(), user.getPassword())) {
-            throw new IllegalArgumentException("현재 비밀번호가 일치하지 않습니다.");
+            throw new PasswordMismatchException("현재 비밀번호가 일치하지 않습니다.");
         }
 
         // 변경 비밀번호 일치 확인
         log.info("비밀번호 일치 확인");
         if (!changePasswordDto.getFirstInputPassword().equals(changePasswordDto.getSecondInputPassword())) {
-            throw new IllegalArgumentException("새로운 비밀번호가 일치하지 않습니다");
+            throw new PasswordMismatchException("새로운 비밀번호가 일치하지 않습니다");
         }
 
         // 최근 세 번 안에 사용한 비밀번호 확인
@@ -148,7 +149,7 @@ public class UserServiceImpl implements UserService{
         for (PasswordManager passwordManager : passwordHistory) {
             String recentPassword = passwordManager.getPassword();
             if (passwordEncoder.matches(changePasswordDto.getSecondInputPassword(), recentPassword)) {
-                throw new IllegalArgumentException("최근 세 번 안에 사용한 비밀번호입니다.");
+                throw new RecentPasswordException("최근 세 번 안에 사용한 비밀번호입니다.");
             }
         }
 
@@ -174,6 +175,6 @@ public class UserServiceImpl implements UserService{
     // 유저 체크 메서드
     public void authUserCheck (String username) {
         userRepository.findByUsernameAndIsDeletedFalse(username)
-                .orElseThrow(() -> new IllegalArgumentException("탈퇴한 유저입니다."));
+                .orElseThrow(() -> new UserNotFoundException("탈퇴한 유저입니다."));
     }
 }
