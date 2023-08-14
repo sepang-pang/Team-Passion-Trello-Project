@@ -4,6 +4,9 @@ import com.passion.teampassiontrelloproject.board.dto.BoardRequestDto;
 import com.passion.teampassiontrelloproject.board.dto.BoardResponseDto;
 import com.passion.teampassiontrelloproject.board.entity.Board;
 import com.passion.teampassiontrelloproject.board.repository.BoardRepository;
+import com.passion.teampassiontrelloproject.common.advice.custom.BoardInvitationNotFoundException;
+import com.passion.teampassiontrelloproject.common.advice.custom.BoardNotFoundException;
+import com.passion.teampassiontrelloproject.common.advice.custom.SelfInviteNotAllowedException;
 import com.passion.teampassiontrelloproject.common.dto.ApiResponseDto;
 import com.passion.teampassiontrelloproject.common.slacknotify.SlackService;
 import com.passion.teampassiontrelloproject.user.entity.User;
@@ -15,6 +18,7 @@ import com.passion.teampassiontrelloproject.userBoard.repository.UserBoardReposi
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -76,9 +80,6 @@ public class BoardServiceImpl implements BoardService{
         // 수정할 보드 조회
         Board board = findBoard(id);
 
-        // 초대된 유저인지 체크
-//        checkInvitedUser(board, user);
-
         // 수정
         board.update(boardRequestDto);
 
@@ -95,9 +96,6 @@ public class BoardServiceImpl implements BoardService{
     public ResponseEntity<ApiResponseDto> deleteBoard(Long id, User user) {
         // 삭제할 보드 조회
         Board board = findBoard(id);
-
-        // 초대된 유저인지 체크
-//        checkInvitedUser(board, user);
 
         // 삭제
         boardRepository.delete(board);
@@ -125,7 +123,7 @@ public class BoardServiceImpl implements BoardService{
 
         // 보드 생성자(팀장)만 유저 초대
         if(!user.getId().equals(tagetBoard.getUser().getId())){
-            throw new IllegalArgumentException("초대 권한이 없습니다.");
+            throw new AccessDeniedException("초대 권한이 없습니다.");
         }
 
         // 슬랙 메시지
@@ -157,11 +155,11 @@ public class BoardServiceImpl implements BoardService{
         User targetUser = userRepository.findByUserIdAndIsDeletedFalse(UserId).orElseThrow(()-> new IllegalArgumentException("존재하지 않는 유저입니다."));
 
         if(!user.getId().equals(board.getUser().getId())){
-            throw new IllegalArgumentException("유저 관리 권한이 없습니다.");
+            throw new AccessDeniedException("유저 관리 권한이 없습니다.");
         }
 
         if(targetUser.getId().equals(board.getUser().getId())){
-            throw new IllegalArgumentException("팀장은 삭제할 수 없습니다.");
+            throw new AccessDeniedException("팀장은 삭제할 수 없습니다.");
         }
 
         Optional<UserBoard> userBoardOptional = userBoardRepository.findByUserIdAndBoardId(targetUser.getId(), board.getId());
@@ -175,15 +173,15 @@ public class BoardServiceImpl implements BoardService{
     // 보드 조회
     @Override
     public Board findBoard(Long id) {
-        return boardRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 보드입니다."));
+        return boardRepository.findById(id).orElseThrow(() -> new BoardNotFoundException("존재하지 않는 보드입니다."));
     }
 
     // 유저 조회
     public User findUser(User user, String username) {
         if (user.getUsername().equals(username)) {
-            throw new IllegalArgumentException("본인은 초대할 수 없습니다");
+            throw new SelfInviteNotAllowedException("본인은 초대할 수 없습니다");
         }
-        return userRepository.findByUsernameAndIsDeletedFalse(username).orElseThrow(() -> new IllegalArgumentException("초대받지 못한 보드입니다."));
+        return userRepository.findByUsernameAndIsDeletedFalse(username).orElseThrow(() -> new BoardInvitationNotFoundException("초대받지 못한 보드입니다."));
     }
 
     // 초대 유저 검증

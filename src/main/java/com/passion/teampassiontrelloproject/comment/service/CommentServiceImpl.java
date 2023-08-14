@@ -6,6 +6,7 @@ import com.passion.teampassiontrelloproject.comment.dto.CommentRequestDto;
 import com.passion.teampassiontrelloproject.comment.dto.CommentResponseDto;
 import com.passion.teampassiontrelloproject.comment.entity.Comment;
 import com.passion.teampassiontrelloproject.comment.repository.CommentRepository;
+import com.passion.teampassiontrelloproject.common.advice.custom.CardNotFoundException;
 import com.passion.teampassiontrelloproject.common.slacknotify.SlackService;
 import com.passion.teampassiontrelloproject.user.entity.User;
 import lombok.RequiredArgsConstructor;
@@ -73,7 +74,7 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public Comment findComment(long id) {
         return commentRepository.findById(id).orElseThrow(() ->
-                new IllegalArgumentException("선택한 card는 존재하지 않습니다.")
+                new CardNotFoundException("선택한 card는 존재하지 않습니다.")
         );
     }
 }

@@ -9,6 +9,7 @@ import com.passion.teampassiontrelloproject.comment2.dto.Comment2RequestDto;
 import com.passion.teampassiontrelloproject.comment2.dto.Comment2ResponseDto;
 import com.passion.teampassiontrelloproject.comment2.entity.Comment2;
 import com.passion.teampassiontrelloproject.comment2.repository.Comment2Repository;
+import com.passion.teampassiontrelloproject.common.advice.custom.CardNotFoundException;
 import com.passion.teampassiontrelloproject.common.slacknotify.SlackService;
 import com.passion.teampassiontrelloproject.user.entity.User;
 import lombok.RequiredArgsConstructor;
@@ -73,7 +74,7 @@ public class Comment2ServiceImpl implements Comment2Service {
     @Override
     public Comment2 findComment(long id) {
         return commentRepository.findById(id).orElseThrow(() ->
-                new IllegalArgumentException("선택한 댓글은 존재하지 않습니다.")
+                new CardNotFoundException("선택한 댓글은 존재하지 않습니다.")
         );
     }
 }

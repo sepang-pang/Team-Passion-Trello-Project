@@ -6,6 +6,8 @@ import com.passion.teampassiontrelloproject.column.dto.ColumnsRequestDto;
 import com.passion.teampassiontrelloproject.column.dto.ColumnsResponseDto;
 import com.passion.teampassiontrelloproject.column.entity.Columns;
 import com.passion.teampassiontrelloproject.column.repository.ColumnsRepository;
+import com.passion.teampassiontrelloproject.common.advice.custom.BoardInvitationNotFoundException;
+import com.passion.teampassiontrelloproject.common.advice.custom.BoardNotFoundException;
 import com.passion.teampassiontrelloproject.common.slacknotify.SlackService;
 import com.passion.teampassiontrelloproject.user.entity.User;
 import com.passion.teampassiontrelloproject.userBoard.repository.UserBoardRepository;
@@ -72,14 +74,14 @@ public class ColumnsServiceImpl implements ColumnsService {
     @Override
     public Columns findColumns(long id) {
         return columnsRepository.findById(id).orElseThrow(() ->
-                new IllegalArgumentException("선택한 board는 존재하지 않습니다.")
+                new BoardNotFoundException("선택한 Board는 존재하지 않습니다.")
         );
     }
 
     // 보드에 속한 유저가 아니라면 카드에 대한 권한을 가질 수 없음
     public void authority(User user, Long boardId) {
         userBoardRepository.findByUserIdAndBoardId(user.getId(), boardId).orElseThrow(() ->
-                new IllegalArgumentException("보드에 속한 유저가 아닙니다."));
+                new BoardInvitationNotFoundException("보드에 속한 유저가 아닙니다."));
     }
 
 }
