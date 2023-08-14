@@ -1,6 +1,5 @@
 package com.passion.teampassiontrelloproject.aop;
 
-import com.passion.teampassiontrelloproject.board.repository.BoardRepository;
 import com.passion.teampassiontrelloproject.card.entity.Card;
 import com.passion.teampassiontrelloproject.card.repository.CardRepository;
 import com.passion.teampassiontrelloproject.column.dto.ColumnsRequestDto;
@@ -9,8 +8,8 @@ import com.passion.teampassiontrelloproject.column.repository.ColumnsRepository;
 import com.passion.teampassiontrelloproject.comment.dto.CommentRequestDto;
 import com.passion.teampassiontrelloproject.comment.entity.Comment;
 import com.passion.teampassiontrelloproject.comment.repository.CommentRepository;
-import com.passion.teampassiontrelloproject.comment2.dto.Comment2RequestDto;
-import com.passion.teampassiontrelloproject.comment2.entity.Comment2;
+import com.passion.teampassiontrelloproject.reply.dto.ReplyRequestDto;
+import com.passion.teampassiontrelloproject.reply.entity.Reply;
 import com.passion.teampassiontrelloproject.common.security.UserDetailsImpl;
 import com.passion.teampassiontrelloproject.user.entity.User;
 import com.passion.teampassiontrelloproject.userBoard.repository.UserBoardRepository;
@@ -69,17 +68,17 @@ public class BoardInviteAop {
     @Pointcut("execution(* com.passion.teampassiontrelloproject.comment.service.CommentService.getCommentById(..))")
     private void getCommentById() {}
 
-    // createComment2
-    @Pointcut("execution(* com.passion.teampassiontrelloproject.comment2.service.Comment2Service.createComment(..))")
-    private void createComment2() {}
+    // createReply
+    @Pointcut("execution(* com.passion.teampassiontrelloproject.reply.service.ReplyService.createReply(..))")
+    private void createReply() {}
 
-    // updateComment2
-    @Pointcut("execution(* com.passion.teampassiontrelloproject.comment2.service.Comment2Service.updateComment(..))")
-    private void updateComment2() {}
+    // updateReply
+    @Pointcut("execution(* com.passion.teampassiontrelloproject.reply.service.ReplyService.updateReply(..))")
+    private void updateReply() {}
 
-    // deleteComment2
-    @Pointcut("execution(* com.passion.teampassiontrelloproject.comment2.service.Comment2Service.deleteComment(..))")
-    private void deleteComment2() {}
+    // deleteReply
+    @Pointcut("execution(* com.passion.teampassiontrelloproject.reply.service.ReplyService.deleteReply(..))")
+    private void deleteReply() {}
 
     // updateBoard
     @Pointcut("execution(* com.passion.teampassiontrelloproject.board.service.BoardService.updateBoard(..))")
@@ -154,27 +153,27 @@ public class BoardInviteAop {
     public Object executeAuthorityCommentGet(ProceedingJoinPoint joinPoint) throws Throwable{
         Long commentId = (Long)joinPoint.getArgs()[0];
 
-        userCheck(commentBoard2(commentId));
+        userCheck(replyBoard(commentId));
         return joinPoint.proceed();
     }
 
-    // createComment2, updateComment2  board 초대 여부 확인
-    @Around("createComment2() || updateComment2()")
-    public Object executeAuthorityComment2(ProceedingJoinPoint joinPoint) throws Throwable{
-        Comment2RequestDto comment2RequestDto = (Comment2RequestDto)joinPoint.getArgs()[0];
+    // createReply, updateReply  board 초대 여부 확인
+    @Around("createReply() || updateReply()")
+    public Object executeAuthorityReply(ProceedingJoinPoint joinPoint) throws Throwable{
+        ReplyRequestDto replyRequestDto = (ReplyRequestDto)joinPoint.getArgs()[0];
 
         // user
-        userCheck(commentBoard2(comment2RequestDto.getCommentId()));
+        userCheck(replyBoard(replyRequestDto.getCommentId()));
         return joinPoint.proceed();
     }
 
-    // deleteComment2 board 초대 여부 확인
-    @Around("deleteComment2()")
-    public Object executeAuthorityCommentDelete2(ProceedingJoinPoint joinPoint) throws Throwable{
-        Comment2 comment2 = (Comment2)joinPoint.getArgs()[0];
+    // deleteReply board 초대 여부 확인
+    @Around("deleteReply()")
+    public Object executeAuthorityReplyDelete(ProceedingJoinPoint joinPoint) throws Throwable{
+        Reply reply = (Reply)joinPoint.getArgs()[0];
 
         // user
-        userCheck(commentBoard2(comment2.getComment().getId()));
+        userCheck(replyBoard(reply.getComment().getId()));
         return joinPoint.proceed();
     }
 
@@ -209,8 +208,8 @@ public class BoardInviteAop {
         return columns.get().getBoard().getId();
     }
 
-    // comment2 에서 boardId 찾기
-    public Long commentBoard2(Long id){
+    // reply 에서 boardId 찾기
+    public Long replyBoard(Long id){
         Optional<Comment> comment = commentRepository.findById(id);
         Optional<Card> card = cardRepository.findById(comment.get().getCard().getCard_id());
         Optional<Columns> columns = columnsRepository.findById(card.get().getColumns().getId());

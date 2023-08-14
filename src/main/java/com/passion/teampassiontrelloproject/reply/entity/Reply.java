@@ -1,6 +1,5 @@
-package com.passion.teampassiontrelloproject.comment2.entity;
+package com.passion.teampassiontrelloproject.reply.entity;
 
-import com.passion.teampassiontrelloproject.card.entity.Card;
 import com.passion.teampassiontrelloproject.comment.entity.Comment;
 import com.passion.teampassiontrelloproject.common.entity.Timestamped;
 import com.passion.teampassiontrelloproject.user.entity.User;
@@ -11,18 +10,18 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor
-@Table(name = "comment2")
-public class Comment2 extends Timestamped {
+@Table(name = "reply")
+public class Reply extends Timestamped {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false)
-    private String username2;
+    private String username;
 
     @Column(nullable = false)
-    private String description2;
+    private String description;
 
     @ManyToOne
     @JoinColumn(name = "comment_id")
@@ -32,11 +31,11 @@ public class Comment2 extends Timestamped {
     @JoinColumn(name = "user_id")
     private User user;
 
-    public void setUsername2(String username2) {
-        this.username2 = username2;
+    public void setUsername(String username) {
+        this.username = username;
     }
-    public void setDescription2(String description2) {
-        this.description2 = description2;
+    public void setDescription(String description) {
+        this.description = description;
     }
     public void setComment(Comment comment) {
         this.comment = comment;

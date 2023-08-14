@@ -4,7 +4,6 @@ import com.passion.teampassiontrelloproject.card.dto.CardRequestDto;
 import com.passion.teampassiontrelloproject.cardCollaborators.entity.CardCollaborators;
 import com.passion.teampassiontrelloproject.column.entity.Columns;
 import com.passion.teampassiontrelloproject.comment.entity.Comment;
-import com.passion.teampassiontrelloproject.comment2.entity.Comment2;
 import com.passion.teampassiontrelloproject.common.entity.Timestamped;
 import com.passion.teampassiontrelloproject.user.entity.User;
 import jakarta.persistence.*;
@@ -12,7 +11,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;

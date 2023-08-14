@@ -26,7 +26,7 @@ public class QComment extends EntityPathBase<Comment> {
 
     public final com.passion.teampassiontrelloproject.card.entity.QCard card;
 
-    public final ListPath<com.passion.teampassiontrelloproject.comment2.entity.Comment2, com.passion.teampassiontrelloproject.comment2.entity.QComment2> Comment2List = this.<com.passion.teampassiontrelloproject.comment2.entity.Comment2, com.passion.teampassiontrelloproject.comment2.entity.QComment2>createList("Comment2List", com.passion.teampassiontrelloproject.comment2.entity.Comment2.class, com.passion.teampassiontrelloproject.comment2.entity.QComment2.class, PathInits.DIRECT2);
+    public final ListPath<com.passion.teampassiontrelloproject.reply.entity.reply, com.passion.teampassiontrelloproject.reply.entity.reply> ReplyList = this.<com.passion.teampassiontrelloproject.reply.entity.Reply, com.passion.teampassiontrelloproject.reply.entity.Reply>createList("Reply", com.passion.teampassiontrelloproject.reply.entity.Reply.class, com.passion.teampassiontrelloproject.reply.entity.Reply.class, PathInits.DIRECT2);
 
     //inherited
     public final DateTimePath<java.time.LocalDateTime> createdAt = _super.createdAt;
