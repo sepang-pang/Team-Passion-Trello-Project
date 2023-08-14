@@ -40,8 +40,8 @@ public class ColumnController {
     }
 
     @PutMapping("/columns/{columnsId}")
-    public ResponseEntity<ApiResponseDto> updateColumns(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long id, @RequestBody ColumnsRequestDto requestDto) {
-        Columns columns = columnsService.findColumns(id);
+    public ResponseEntity<ApiResponseDto> updateColumns(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long columnsId, @RequestBody ColumnsRequestDto requestDto) {
+        Columns columns = columnsService.findColumns(columnsId);
         ColumnsResponseDto result = columnsService.updateColumns(requestDto,columns,  userDetails.getUser());
 
         if (!columns.getUser().getId().equals(userDetails.getUser().getId())) {
@@ -52,8 +52,8 @@ public class ColumnController {
     }
 
     @DeleteMapping("/columns/{columnsId}")
-    public ResponseEntity<ApiResponseDto> deleteColumns(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long id) {
-        Columns columns = columnsService.findColumns(id);
+    public ResponseEntity<ApiResponseDto> deleteColumns(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long columnsId) {
+        Columns columns = columnsService.findColumns(columnsId);
         columnsService.deleteColumns(columns, userDetails.getUser());
 
         if (!columns.getUser().getId().equals(userDetails.getUser().getId())) {
