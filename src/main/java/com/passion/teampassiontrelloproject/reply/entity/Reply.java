@@ -1,6 +1,5 @@
-package com.passion.teampassiontrelloproject.comment2.entity;
+package com.passion.teampassiontrelloproject.reply.entity;
 
-import com.passion.teampassiontrelloproject.card.entity.Card;
 import com.passion.teampassiontrelloproject.comment.entity.Comment;
 import com.passion.teampassiontrelloproject.common.entity.Timestamped;
 import com.passion.teampassiontrelloproject.user.entity.User;
@@ -12,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @Table(name = "comment2")
-public class Comment2 extends Timestamped {
+public class Reply extends Timestamped {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

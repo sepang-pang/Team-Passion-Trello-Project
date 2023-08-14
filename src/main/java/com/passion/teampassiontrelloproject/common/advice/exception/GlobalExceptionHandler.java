@@ -1,7 +1,6 @@
 package com.passion.teampassiontrelloproject.common.advice.exception;
 
 import com.passion.teampassiontrelloproject.common.advice.custom.*;
-import com.sun.jdi.request.DuplicateRequestException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
@@ -181,17 +180,4 @@ public class GlobalExceptionHandler {
                 HttpStatus.NOT_FOUND
         );
     }
-
-    //
-    @ExceptionHandler({DuplicateException.class})
-    public ResponseEntity<RestApiException> duplicateExceptionHandler(DuplicateException ex) {
-        RestApiException restApiException = new RestApiException(ex.getMessage(), HttpStatus.BAD_REQUEST.value());
-        return new ResponseEntity<>(
-                // HTTP body
-                restApiException,
-                // HTTP status code
-                HttpStatus.BAD_REQUEST
-        );
-    }
-
 }

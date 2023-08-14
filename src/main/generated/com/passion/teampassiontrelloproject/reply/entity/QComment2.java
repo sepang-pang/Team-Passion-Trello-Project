@@ -1,4 +1,4 @@
-package com.passion.teampassiontrelloproject.comment2.entity;
+package com.passion.teampassiontrelloproject.reply.entity;
 
 import static com.querydsl.core.types.PathMetadataFactory.*;
 
@@ -14,7 +14,7 @@ import com.querydsl.core.types.dsl.PathInits;
  * QComment2 is a Querydsl query type for Comment2
  */
 @Generated("com.querydsl.codegen.DefaultEntitySerializer")
-public class QComment2 extends EntityPathBase<Comment2> {
+public class QComment2 extends EntityPathBase<Reply> {
 
     private static final long serialVersionUID = 1642752566L;
 
@@ -41,10 +41,10 @@ public class QComment2 extends EntityPathBase<Comment2> {
     public final StringPath username2 = createString("username2");
 
     public QComment2(String variable) {
-        this(Comment2.class, forVariable(variable), INITS);
+        this(Reply.class, forVariable(variable), INITS);
     }
 
-    public QComment2(Path<? extends Comment2> path) {
+    public QComment2(Path<? extends Reply> path) {
         this(path.getType(), path.getMetadata(), PathInits.getFor(path.getMetadata(), INITS));
     }
 
@@ -53,10 +53,10 @@ public class QComment2 extends EntityPathBase<Comment2> {
     }
 
     public QComment2(PathMetadata metadata, PathInits inits) {
-        this(Comment2.class, metadata, inits);
+        this(Reply.class, metadata, inits);
     }
 
-    public QComment2(Class<? extends Comment2> type, PathMetadata metadata, PathInits inits) {
+    public QComment2(Class<? extends Reply> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
         this.comment = inits.isInitialized("comment") ? new com.passion.teampassiontrelloproject.comment.entity.QComment(forProperty("comment"), inits.get("comment")) : null;
         this.user = inits.isInitialized("user") ? new com.passion.teampassiontrelloproject.user.entity.QUser(forProperty("user"), inits.get("user")) : null;

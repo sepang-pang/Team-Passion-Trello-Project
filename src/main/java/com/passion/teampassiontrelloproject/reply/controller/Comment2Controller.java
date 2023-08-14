@@ -1,10 +1,9 @@
-package com.passion.teampassiontrelloproject.comment2.controller;
+package com.passion.teampassiontrelloproject.reply.controller;
 
-import com.passion.teampassiontrelloproject.comment.dto.CommentResponseDto;
-import com.passion.teampassiontrelloproject.comment2.dto.Comment2RequestDto;
-import com.passion.teampassiontrelloproject.comment2.dto.Comment2ResponseDto;
-import com.passion.teampassiontrelloproject.comment2.entity.Comment2;
-import com.passion.teampassiontrelloproject.comment2.service.Comment2ServiceImpl;
+import com.passion.teampassiontrelloproject.reply.dto.ReplyRequestDto;
+import com.passion.teampassiontrelloproject.reply.dto.ReplyResponseDto;
+import com.passion.teampassiontrelloproject.reply.entity.Reply;
+import com.passion.teampassiontrelloproject.reply.service.ReplyServiceImpl;
 import com.passion.teampassiontrelloproject.common.dto.ApiResponseDto;
 import com.passion.teampassiontrelloproject.common.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
@@ -18,12 +17,12 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class Comment2Controller {
 
-    private final Comment2ServiceImpl commentService;
+    private final ReplyServiceImpl commentService;
 
     // 대댓글 선택조회
-    @GetMapping("/comment2/{comment2Id}")
-    public ResponseEntity<Comment2ResponseDto> getComment2ById(@PathVariable Long comment2Id) {
-        Comment2ResponseDto comment = commentService.getComment2ById(comment2Id);
+    @GetMapping("/reply/{replyId}")
+    public ResponseEntity<ReplyResponseDto> getReplyById(@PathVariable Long replyId) {
+        ReplyResponseDto comment = commentService.getReplyById(replyId);
         if (comment != null) {
             return new ResponseEntity<>(comment, HttpStatus.OK);
         } else {
@@ -31,16 +30,16 @@ public class Comment2Controller {
         }
     }
 
-    @PostMapping("/comment2")
-    public ResponseEntity<Comment2ResponseDto> createComment(@AuthenticationPrincipal UserDetailsImpl userDetails, @RequestBody Comment2RequestDto requestDto) {
-        Comment2ResponseDto result = commentService.createComment(requestDto, userDetails.getUser());
+    @PostMapping("/reply")
+    public ResponseEntity<ReplyResponseDto> createComment(@AuthenticationPrincipal UserDetailsImpl userDetails, @RequestBody ReplyRequestDto requestDto) {
+        ReplyResponseDto result = commentService.createComment(requestDto, userDetails.getUser());
         return ResponseEntity.status(HttpStatus.CREATED).body(result);
     }
 
-    @PutMapping("/comment2/{id}")
-    public ResponseEntity<ApiResponseDto> updateComment(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long id, @RequestBody Comment2RequestDto requestDto) {
-        Comment2 comment = commentService.findComment(id);
-        Comment2ResponseDto result = commentService.updateComment(requestDto, comment, userDetails.getUser());
+    @PutMapping("/reply/{id}")
+    public ResponseEntity<ApiResponseDto> updateComment(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long id, @RequestBody ReplyRequestDto requestDto) {
+        Reply comment = commentService.findComment(id);
+        ReplyResponseDto result = commentService.updateComment(requestDto, comment, userDetails.getUser());
         if (!comment.getUser().getId().equals(userDetails.getUser().getId())) {
             throw new IllegalArgumentException("작성자만 수정 할 수 있습니다.");
         }
@@ -48,9 +47,9 @@ public class Comment2Controller {
         return ResponseEntity.ok().body(result);
     }
 
-    @DeleteMapping("/comment2/{id}")
+    @DeleteMapping("/reply/{id}")
     public ResponseEntity<ApiResponseDto> deleteComment(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long id) {
-        Comment2 comment = commentService.findComment(id);
+        Reply comment = commentService.findComment(id);
         commentService.deleteComment(comment, userDetails.getUser());
         if (!comment.getUser().getId().equals(userDetails.getUser().getId())) {
             throw new IllegalArgumentException("작성자만 삭제 할 수 있습니다.");
