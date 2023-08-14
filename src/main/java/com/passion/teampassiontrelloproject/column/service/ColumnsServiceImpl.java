@@ -74,7 +74,7 @@ public class ColumnsServiceImpl implements ColumnsService {
     @Override
     public Columns findColumns(long id) {
         return columnsRepository.findById(id).orElseThrow(() ->
-                new BoardNotFoundException("선택한 Board는 존재하지 않습니다.")
+                new BoardNotFoundException("선택한 columns는 존재하지 않습니다.")
         );
     }
 
